@@ -4,7 +4,9 @@
   "description": "uPort User Storage Service",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --verbose --runInBand",
+    "coverage": "jest --coverage",
+    "tdd": "jest --watchAll"
   },
   "repository": {
     "type": "git",
@@ -17,6 +19,7 @@
   },
   "homepage": "https://github.com/uport-project/lambda-mouro#readme",
   "devDependencies": {
+    "aws-sdk-mock": "^4.3.1",
     "jest": "^23.6.0",
     "serverless-domain-manager": "^3.2.1",
     "serverless-offline": "^4.1.4",
