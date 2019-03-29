@@ -2,11 +2,13 @@
 const createSecretsWrappedHandler = require("./lib/secrets_wrapper");
 
 //Load Mgrs
+const AuthMgr = require('./lib/authMgr');
 const QueryResolverMgr = require("./lib/queryResolverMgr");
 const SchemaMgr = require('./lib/schemaMgr');
 
 //Instanciate Mgr
-let queryResolverMgr = new QueryResolverMgr();
+let authMgr = new AuthMgr();
+let queryResolverMgr = new QueryResolverMgr(authMgr);
 let schemaMgr = new SchemaMgr(queryResolverMgr);
 
 //Mgr that needs secrets handling
