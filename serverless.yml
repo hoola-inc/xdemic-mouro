@@ -1,0 +1,56 @@
+service: lambda-mouro
+
+plugins:
+  - serverless-offline
+  - serverless-kms-secrets
+  - serverless-domain-manager
+  - serverless-plugin-aws-alerts
+
+
+provider:
+   name: aws
+   runtime: nodejs8.10
+   stage: develop
+   region: us-west-2
+   iamRoleStatements:
+     - Effect: Allow
+       Action:
+         - KMS:Decrypt
+       Resource: ${self:custom.kmsSecrets.keyArn}
+   environment:
+      SECRETS: ${self:custom.kmsSecrets.secrets.SECRETS}
+
+custom:
+  serverless-kms-secrets:
+    secretsFile: kms-secrets.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml
+  kmsSecrets: ${file(kms-secrets.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml)}
+  domainName: 
+    develop: api.uport.space
+    master: api.uport.me
+  customDomain:
+    domainName: ${self:custom.domainName.${opt:stage, self:provider.stage}}
+    basePath: mouro
+    createRoute53Record: false
+    baseUrl: https://${self:custom.customDomain.domainName}/${self:custom.customDomain.basePath}
+  alerts:
+    dashboards: true
+    topics:
+      alarm: arn:aws:sns:us-west-2:113196216558:cloudwatch-alarm-to-slack
+    definitions: 
+      functionDuration:
+        threshold: 3000 # override avereage duration alert
+    alarms:
+      - functionThrottles
+      - functionErrors
+      - functionInvocations
+      - functionDuration
+
+functions:
+ graphql:
+    handler: src/api_handler.graphql
+    timeout: 30 #Max (ApiGateway limitation)
+    events:
+    - http:
+        path: /graphql
+        method: post
+        cors: true

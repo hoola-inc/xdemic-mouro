@@ -1,0 +1,35 @@
+{
+  "name": "lambda-mouro",
+  "version": "1.0.0",
+  "description": "uPort User Storage Service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uport-project/lambda-mouro.git"
+  },
+  "author": "Andres Junge <andres.junge@consensys.net>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/uport-project/lambda-mouro/issues"
+  },
+  "homepage": "https://github.com/uport-project/lambda-mouro#readme",
+  "devDependencies": {
+    "jest": "^23.6.0",
+    "serverless-domain-manager": "^3.2.1",
+    "serverless-offline": "^4.1.4",
+    "serverless-plugin-aws-alerts": "^1.2.4"
+  },
+  "dependencies": {
+    "apollo-server-lambda": "^2.3.1",
+    "did-jwt": "0.1.0-alpha1",
+    "graphql": "^14.2.0",
+    "serverless-kms-secrets": "^1.0.4"
+  },
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true
+  }
+}
