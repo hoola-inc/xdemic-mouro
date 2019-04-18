@@ -1,23 +1,24 @@
 {
-  "name": "lambda-mouro",
-  "version": "1.0.0",
+  "name": "mouro",
+  "version": "1.0.1",
   "description": "uPort User Storage Service",
   "main": "index.js",
   "scripts": {
     "test": "jest --verbose --runInBand",
     "coverage": "jest --coverage",
-    "tdd": "jest --watchAll"
+    "tdd": "jest --watchAll",
+    "start": "sls offline"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/uport-project/lambda-mouro.git"
+    "url": "git+https://github.com/uport-project/mouro.git"
   },
   "author": "Andres Junge <andres.junge@consensys.net>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/uport-project/lambda-mouro/issues"
+    "url": "https://github.com/uport-project/mouro/issues"
   },
-  "homepage": "https://github.com/uport-project/lambda-mouro#readme",
+  "homepage": "https://github.com/uport-project/mouro#readme",
   "devDependencies": {
     "aws-sdk-mock": "^4.3.1",
     "jest": "^23.6.0",
