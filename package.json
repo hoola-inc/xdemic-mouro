@@ -7,7 +7,7 @@
     "test": "jest --verbose --runInBand",
     "coverage": "jest --coverage",
     "tdd": "jest --watchAll",
-    "start": "sls offline"
+    "start": "./node_modules/.bin/sls offline"
   },
   "repository": {
     "type": "git",
