@@ -15,6 +15,7 @@ module.exports = class GraphQLHandler {
                 event,
                 context,
             }),
+            introspection: true
         });
 
         return server.createHandler({
