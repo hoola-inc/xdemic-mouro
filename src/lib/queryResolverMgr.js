@@ -1,24 +1,14 @@
 
 module.exports = class QueryResolverMgr {
 
-    constructor() {
-        this.pgUrl = null
-    }
-
-    isSecretsSet() {
-        return this.pgUrl !== null;
-    }
-
-    setSecrets(secrets) {
-        console.log("QueryResolverMgr: Setting Secrets...")
-        this.pgUrl = secrets.PG_URL;
+    constructor(authMgr) {
+        this.authMgr = authMgr
     }
 
     async me(headers){
-        if(!headers) throw Error('no headers');
-
+        const authToken=await this.authMgr.verifyAuthorizationHeader(headers);
         return {
-            did: "did:not:implemented"
+            did: authToken.issuer
         }
     }
 }

@@ -1,13 +1,13 @@
 {
   "name": "mouro",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "uPort User Storage Service",
   "main": "index.js",
   "scripts": {
     "test": "jest --verbose --runInBand",
     "coverage": "jest --coverage",
     "tdd": "jest --watchAll",
-    "start": "sls offline"
+    "start": "./node_modules/.bin/slss offline --host 0.0.0.0 --port $PORT"
   },
   "repository": {
     "type": "git",
@@ -22,18 +22,21 @@
   "devDependencies": {
     "aws-sdk-mock": "^4.3.1",
     "jest": "^23.6.0",
-    "serverless-domain-manager": "^3.2.1",
-    "serverless-offline": "^4.1.4",
-    "serverless-plugin-aws-alerts": "^1.2.4"
+    "uport-credentials": "^1.1.4"
   },
   "dependencies": {
     "apollo-server-lambda": "^2.3.1",
-    "did-jwt": "0.1.0-alpha1",
+    "did-jwt": "^0.1.1",
+    "ethr-did-resolver": "^0.2.0",
     "graphql": "^14.2.0",
-    "serverless-kms-secrets": "^1.0.4"
+    "serverless": "^1.41.0",
+    "serverless-offline": "^4.1.4",
+    "serverless-plugin-aws-alerts": "^1.2.4",
+    "serverless-domain-manager": "^3.2.1"
   },
   "jest": {
     "coverageDirectory": "./coverage/",
-    "collectCoverage": true
+    "collectCoverage": true,
+    "testEnvironment": "node"
   }
 }
