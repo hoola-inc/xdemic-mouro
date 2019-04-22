@@ -32,8 +32,7 @@
     "serverless": "^1.41.0",
     "serverless-offline": "^4.1.4",
     "serverless-plugin-aws-alerts": "^1.2.4",
-    "serverless-domain-manager": "^3.2.1",
-    "serverless-kms-secrets": "^1.0.4"
+    "serverless-domain-manager": "^3.2.1"
   },
   "jest": {
     "coverageDirectory": "./coverage/",

@@ -1,5 +1,4 @@
 "use strict";
-const createSecretsWrappedHandler = require("./lib/secrets_wrapper");
 
 //Load Mgrs
 const AuthMgr = require('./lib/authMgr');
@@ -11,9 +10,6 @@ let authMgr = new AuthMgr();
 let queryResolverMgr = new QueryResolverMgr(authMgr);
 let schemaMgr = new SchemaMgr(queryResolverMgr);
 
-//Mgr that needs secrets handling
-const secretsMgrArr=[];
-
 //Load handlers
 const GraphQLHandler = require("./handlers/graphql");
 
@@ -21,4 +17,4 @@ const GraphQLHandler = require("./handlers/graphql");
 const graphqlHandler = (new GraphQLHandler(schemaMgr)).getHandler()
 
 //Exports for serverless
-exports.graphql = createSecretsWrappedHandler(secretsMgrArr,graphqlHandler);
+exports.graphql = graphqlHandler;

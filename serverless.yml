@@ -2,7 +2,6 @@ service: lambda-mouro
 
 plugins:
   - serverless-offline
-  - serverless-kms-secrets
   - serverless-domain-manager
   - serverless-plugin-aws-alerts
 
@@ -21,9 +20,6 @@ provider:
       SECRETS: ${self:custom.kmsSecrets.secrets.SECRETS}
 
 custom:
-  serverless-kms-secrets:
-    secretsFile: kms-secrets.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml
-  kmsSecrets: ${file(kms-secrets.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml)}
   domainName: 
     develop: api.uport.space
     master: api.uport.me
