@@ -22,8 +22,6 @@
   "devDependencies": {
     "aws-sdk-mock": "^4.3.1",
     "jest": "^23.6.0",
-    "serverless-domain-manager": "^3.2.1",
-    "serverless-plugin-aws-alerts": "^1.2.4",
     "uport-credentials": "^1.1.4"
   },
   "dependencies": {
@@ -33,6 +31,8 @@
     "graphql": "^14.2.0",
     "serverless": "^1.41.0",
     "serverless-offline": "^4.1.4",
+    "serverless-plugin-aws-alerts": "^1.2.4",
+    "serverless-domain-manager": "^3.2.1",
     "serverless-kms-secrets": "^1.0.4"
   },
   "jest": {
