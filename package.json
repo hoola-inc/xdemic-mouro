@@ -7,7 +7,7 @@
     "test": "jest --verbose --runInBand",
     "coverage": "jest --coverage",
     "tdd": "jest --watchAll",
-    "start": "./node_modules/.bin/sls offline"
+    "start": "./node_modules/.bin/slss offline"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,6 @@
     "jest": "^23.6.0",
     "serverless": "^1.41.0",
     "serverless-domain-manager": "^3.2.1",
-    "serverless-offline": "^4.1.4",
     "serverless-plugin-aws-alerts": "^1.2.4",
     "uport-credentials": "^1.1.4"
   },
@@ -33,6 +32,7 @@
     "did-jwt": "^0.1.1",
     "ethr-did-resolver": "^0.2.0",
     "graphql": "^14.2.0",
+    "serverless-offline": "^4.1.4",
     "serverless-kms-secrets": "^1.0.4"
   },
   "jest": {
