@@ -7,7 +7,7 @@
     "test": "jest --verbose --runInBand",
     "coverage": "jest --coverage",
     "tdd": "jest --watchAll",
-    "start": "./node_modules/.bin/slss offline --port $PORT"
+    "start": "./node_modules/.bin/slss offline --host 0.0.0.0 --port $PORT"
   },
   "repository": {
     "type": "git",
