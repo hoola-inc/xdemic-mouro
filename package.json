@@ -1,7 +1,7 @@
 {
   "name": "mouro",
-  "version": "1.1.0",
-  "description": "uPort User Storage Service",
+  "version": "1.1.1",
+  "description": "uPort Edge Server",
   "main": "index.js",
   "scripts": {
     "test": "jest --verbose --runInBand",
