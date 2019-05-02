@@ -88,6 +88,26 @@ jobs:
       - run:
           name: reject-story
           command: echo "TODO reject story in PT if test failed"
+  
+  # release version
+  release:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:8.10
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: install-dependencies
+          command: sudo npm i -g serverless
+      - run:
+          name: deploy-to-aws
+          command: |
+            sls package
+            sls deploy --stage master
+      - run: 
+          name: create docker file
+          command: echo "TODO create docker file"
 
 workflows:
   version: 2
@@ -109,7 +129,7 @@ workflows:
           filters:
             branches:
               ignore: master
-      - deploy:
+      - release:
           requires:
             - unit-tests
           filters:
