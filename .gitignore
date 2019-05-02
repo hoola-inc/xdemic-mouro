@@ -67,3 +67,6 @@ typings/
 .vscode/
 
 .pt_token
+
+test-reports/
+test-results/
