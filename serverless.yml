@@ -1,4 +1,4 @@
-service: lambda-mouro
+service: mouro
 
 plugins:
   - serverless-offline
@@ -9,31 +9,10 @@ plugins:
 provider:
    name: aws
    runtime: nodejs8.10
-   stage: develop
    region: us-west-2
 
-custom:
-  domainName: 
-    develop: api.uport.space
-    master: api.uport.me
-  customDomain:
-    domainName: ${self:custom.domainName.${opt:stage, self:provider.stage}}
-    basePath: mouro
-    createRoute53Record: false
-    baseUrl: https://${self:custom.customDomain.domainName}/${self:custom.customDomain.basePath}
-  alerts:
-    dashboards: true
-    topics:
-      alarm: arn:aws:sns:us-west-2:113196216558:cloudwatch-alarm-to-slack
-    definitions: 
-      functionDuration:
-        threshold: 3000 # override avereage duration alert
-    alarms:
-      - functionThrottles
-      - functionErrors
-      - functionInvocations
-      - functionDuration
-
+custom: ${file(serverless-custom.yml)}
+  
 functions:
  graphql:
     handler: src/api_handler.graphql

@@ -1,0 +1,4 @@
+customDomain:
+  domainName: edge.uport.space
+  basePath: ${opt:stage}
+  createRoute53Record: false
