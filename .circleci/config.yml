@@ -76,8 +76,8 @@ jobs:
             sls package
             sls deploy --stage ${STAGE}
   
-  # Run test automation
-  tests:
+  # Run functional tests
+  functional-tests:
     working_directory: ~/repo
     docker:
       - image: circleci/node:8.10
@@ -92,7 +92,7 @@ jobs:
           command: | 
             export STAGE=`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'`
             cat functional-tests/branch.postman_environment.json | sed "s/@stage@/${STAGE}/g" > env.json
-            mkdir test-results/newman
+            mkdir -p test-results/newman
             newman run functional-tests/mouro.postman_collection.json -e env.json --bail \
                --reporters htmlextra,junitxray \ 
                --reporter-htmlextra-export test-reports \
@@ -142,7 +142,7 @@ workflows:
           filters:
             branches:
               ignore: master
-      - tests:
+      - functional-tests:
           requires:
             - deploy
           filters:
