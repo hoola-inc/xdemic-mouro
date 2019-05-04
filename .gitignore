@@ -70,3 +70,5 @@ typings/
 
 test-reports/
 test-results/
+
+env.json
