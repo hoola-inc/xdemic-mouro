@@ -88,18 +88,12 @@ jobs:
           name: install-dependencies
           command: sudo npm i -g newman newman-reporter-junitxray newman-reporter-htmlextra
       - run:
-          name: prepare-newman-tests
+          name: newman-tests
           command: | 
             export STAGE=`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'`
             cat functional-tests/branch.postman_environment.json | sed "s/@stage@/${STAGE}/g" > env.json
             mkdir -p test-results/newman
-      - run:
-          name: newman-tests
-          command: >-
-              newman run functional-tests/mouro.postman_collection.json -e env.json --bail 
-               --reporters htmlextra,junitxray 
-               --reporter-htmlextra-export test-reports 
-               --reporter-junitxray-export test-results/newman/results.xml
+            newman run functional-tests/mouro.postman_collection.json -e env.json --bail --reporters htmlextra,junitxray --reporter-htmlextra-export test-reports --reporter-junitxray-export test-results/newman/results.xml
       # Store test results for the "Test Summary" tab
       - store_test_results:
           path: test-results
