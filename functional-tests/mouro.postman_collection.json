@@ -13,32 +13,14 @@
 					"name": "me",
 					"event": [
 						{
-							"listen": "prerequest",
-							"script": {
-								"id": "7dab9ed6-5054-4569-89c2-ab945a72f1da",
-								"exec": [
-									"pm.environment.set(\"authToken\",\"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NkstUiJ9.eyJpYXQiOjE1NTY5MDQ3MzQsInN1YiI6IioiLCJpc3MiOiJkaWQ6ZXRocjoweDUyNTRiOGI4NTVhOTZmYzFiMTUxZmE0OWQ3MDliODJlYWEzMmU1ZTIifQ.8L0QheJw1YIpOuDBLcJyKJDhzV8gwSLEhtImD2jGIhhfL4C06UxUyN98LOAxNBkJ-DGHBYt3JKJ-5JKggOtd-gE\");",
-									"",
-									"",
-									"",
-									"pm.environment.set(\"did\",\"did:ethr:0x5254b8b855a96fc1b151fa49d709b82eaa32e5e2\");",
-									"",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
 							"listen": "test",
 							"script": {
 								"id": "3ad3326e-b3bf-4836-b6e3-2cd741485a4f",
 								"exec": [
-									"// example using pm.response.to.have",
 									"pm.test(\"response is ok\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"// example using response assertions",
 									"pm.test(\"response should be okay to process\", function () { ",
 									"    pm.response.to.not.be.error; ",
 									"});",
@@ -75,7 +57,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"query\": \"{\\n\\tme{\\n    did\\n  }\\n}\"\n}"
+							"raw": "{\n\"query\": \"{\\n\\tme{\\n    did\\n  }\\n}\"\n}"
 						},
 						"url": {
 							"raw": "{{mouroUrl}}/graphql",
