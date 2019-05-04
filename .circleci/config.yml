@@ -1,49 +1,155 @@
 version: 2
 jobs:
-  build:
+  #First job, checkouts code and node deps
+  checkout-setup:
     working_directory: ~/repo
     docker:
       - image: circleci/node:8.10
     steps:
       - checkout
-
-      # Download and cache dependencies
+      # Restore dependencies cache
       - restore_cache:
           keys:
             - dependencies-cache-{{ checksum "package.json" }}
-
+      # Install dependencies
       - run:
-          name: install-serverless-and dependencies
-          command: |
-            sudo npm i -g serverless codecov
-            npm i
-
-      - run:
-          name: test
-          command: npm test && codecov
-
-      - run:
-          name: code-coverage
-          command: bash <(curl -s https://codecov.io/bash)
-
-      - run:
-          name: deploy-to-serverless
-          command: |
-            sls package
-            if [ "${CIRCLE_BRANCH}" == "develop" ]; then
-              sls deploy --stage develop
-            fi
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              sls deploy --stage master
-            fi
-
+          name: install-dependencies
+          command: npm i 
+      # Save dependencies cache
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
+      # Persist data
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - ./
+
+  # Run unit tests and codecoverage
+  unit-tests:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:8.10
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: install-dependencies
+          command: sudo npm i -g codecov
+      - run:
+          name: test
+          command: npm test && codecov
+      # Send codecoverage report to codecov.io (Needs the CODECOV_TOKEN env for private repo)
+      - run:
+          name: code-coverage
+          command: bash <(curl -s https://codecov.io/bash)
+      # Store test results for the "Test Summary" tab
+      - store_test_results:
+          path: test-results
+      # Store test results in the "Artifacts" tab
+      - store_artifacts:
+          path: test-results
+      # Store test reports in the "Artifacts" tab
+      - store_artifacts:
+          path: test-reports
+      # Store coverage in the "Artifacts" tab
+      - store_artifacts:
+          path: coverage
+
+  # deploy testing version
+  deploy:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:8.10
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: install-dependencies
+          command: sudo npm i -g serverless
+      - run:
+          name: deploy-to-aws
+          command: |
+            cp serverless-custom-branch.yml serverless-custom.yml
+            export STAGE=`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'`
+            sls package
+            sls deploy --stage ${STAGE}
+  
+  # Run functional tests
+  functional-tests:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:8.10
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: install-dependencies
+          command: sudo npm i -g newman newman-reporter-junitxray newman-reporter-htmlextra
+      - run:
+          name: newman-tests
+          command: | 
+            export STAGE=`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'`
+            node dev-scripts/create-newman-env https://edge.uport.space/${STAGE} > env.json
+            mkdir -p test-results/newman
+            mkdir test-reports
+            newman run functional-tests/mouro.postman_collection.json -e env.json --bail --reporters htmlextra,junitxray --reporter-htmlextra-export test-reports --reporter-junitxray-export test-results/newman/results.xml
+      # Store test results for the "Test Summary" tab
+      - store_test_results:
+          path: test-results
+      # Store test results in the "Artifacts" tab
+      - store_artifacts:
+          path: test-results
+      # Store test reports in the "Artifacts" tab
+      - store_artifacts:
+          path: test-reports
+  
+  # release version
+  release:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:8.10
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: install-dependencies
+          command: sudo npm i -g serverless
+      - run:
+          name: deploy-to-aws
+          command: |
+            cp serverless-custom-master.yml serverless-custom.yml
+            sls package
+            sls deploy --stage master
+      - run: 
+          name: create docker file
+          command: echo "TODO create docker file"
 
 workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - build
+      - checkout-setup
+      - unit-tests:
+          requires:
+            - checkout-setup
+      - deploy:
+          requires:
+            - checkout-setup
+          filters:
+            branches:
+              ignore: master
+      - functional-tests:
+          requires:
+            - deploy
+          filters:
+            branches:
+              ignore: master
+      - release:
+          requires:
+            - unit-tests
+          filters:
+            branches:
+              only: master
+    

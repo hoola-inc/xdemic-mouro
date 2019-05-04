@@ -65,3 +65,10 @@ typings/
 .DS_Store
 
 .vscode/
+
+.pt_token
+
+test-reports/
+test-results/
+
+env.json
