@@ -1,8 +1,9 @@
 
 module.exports = class QueryResolverMgr {
 
-    constructor(authMgr) {
+    constructor(authMgr,storageMgr) {
         this.authMgr = authMgr
+        this.storageMgr = storageMgr
     }
 
     async me(headers){
