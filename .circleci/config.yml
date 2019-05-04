@@ -91,7 +91,7 @@ jobs:
           name: newman-tests
           command: | 
             export STAGE=`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'`
-            node dev-scipts/create-newman-env https://edge.uport.space/${STAGE} > env.json
+            node dev-scripts/create-newman-env https://edge.uport.space/${STAGE} > env.json
             mkdir -p test-results/newman
             mkdir test-reports
             newman run functional-tests/mouro.postman_collection.json -e env.json --bail --reporters htmlextra,junitxray --reporter-htmlextra-export test-reports --reporter-junitxray-export test-results/newman/results.xml
