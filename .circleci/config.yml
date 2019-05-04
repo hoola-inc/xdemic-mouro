@@ -71,10 +71,7 @@ jobs:
       - run:
           name: deploy-to-aws
           command: |
-            cp serverless-custom-branch.yml serverless-custom.yml
-            export STAGE=`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'`
-            sls package
-            sls deploy --stage ${STAGE}
+            sls deploy --stage `echo ${CIRCLE_BRANCH} | sed 's/\//-/g'`
   
   # Run functional tests
   functional-tests:
@@ -90,8 +87,7 @@ jobs:
       - run:
           name: newman-tests
           command: | 
-            export STAGE=`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'`
-            node dev-scripts/create-newman-env https://edge.uport.space/${STAGE} > env.json
+            node dev-scripts/create-newman-env https://edge.uport.space/`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'` > env.json
             mkdir -p test-results/newman
             mkdir test-reports
             newman run functional-tests/mouro.postman_collection.json -e env.json --bail --reporters htmlextra,junitxray --reporter-htmlextra-export test-reports --reporter-junitxray-export test-results/newman/results.xml
@@ -119,8 +115,7 @@ jobs:
       - run:
           name: deploy-to-aws
           command: |
-            cp serverless-custom-master.yml serverless-custom.yml
-            sls package
+            cp serverless-config/serverless-custom-master.yml serverless-config/serverless-custom.yml
             sls deploy --stage master
       - run: 
           name: create docker file

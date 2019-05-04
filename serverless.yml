@@ -5,20 +5,23 @@ plugins:
   - serverless-domain-manager
   - serverless-plugin-aws-alerts
 
-
 provider:
    name: aws
    runtime: nodejs8.10
    region: us-west-2
+   environment:
+      DYNAMODB_TABLE: ${self:service}-${opt:stage}
+   iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
-custom: ${file(serverless-custom.yml)}
+custom: ${file(serverless-config/serverless-custom.yml)}
   
 functions:
- graphql:
-    handler: src/api_handler.graphql
-    timeout: 30 #Max (ApiGateway limitation)
-    events:
-    - http:
-        path: /graphql
-        method: post
-        cors: true
+  - ${file(serverless-config/functions.yml)}
+
+resources:
+  - ${file(serverless-config/dynamodb.yml)}
