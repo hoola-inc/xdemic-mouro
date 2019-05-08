@@ -72,7 +72,14 @@ jobs:
           name: deploy-to-aws
           command: |
             npm run config::branch
+            npm run build
             sls deploy --stage `echo ${CIRCLE_BRANCH} | sed 's/\//-/g'`
+            node dev-scripts/create-newman-env https://edge.uport.space/`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'` > env.json
+      # Persist env.json
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - env.json
   
   # Run functional tests
   functional-tests:
@@ -88,7 +95,6 @@ jobs:
       - run:
           name: newman-tests
           command: | 
-            node dev-scripts/create-newman-env https://edge.uport.space/`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'` > env.json
             mkdir -p test-results/newman
             mkdir test-reports
             newman run functional-tests/mouro.postman_collection.json -e env.json --bail --reporters htmlextra,junitxray --reporter-htmlextra-export test-reports --reporter-junitxray-export test-results/newman/results.xml
@@ -117,7 +123,14 @@ jobs:
           name: deploy-to-aws
           command: |
             npm run config::master
+            npm run build
             sls deploy --stage master
+            node dev-scripts/create-newman-env https://edge.uport.me/ > env.json
+      # Persist env.json
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - env.json
       - run: 
           name: create docker file
           command: echo "TODO create docker file"

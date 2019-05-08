@@ -1,6 +1,7 @@
 service: mouro
 
 plugins:
+  - serverless-plugin-typescript
   - serverless-domain-manager
   - serverless-plugin-aws-alerts
 
