@@ -1,7 +1,12 @@
+interface StorageInterface {
+    someQuery(string): string;
+}
+
 module.exports = class StorageMgr {
 
+    storage: StorageInterface;
+
     constructor() {
-        this.storage=null;
         if(!this.storage && process.env.PG_URL) this.storage = new (require("./pgMgr"))();
         if(!this.storage && process.env.DYNAMODB_TABLE) this.storage = new (require("./dynamoMgr"))();
         if(!this.storage && process.env.MONGODB_URI) this.storage = new (require("./mongoMgr"))();

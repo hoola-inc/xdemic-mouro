@@ -1,6 +1,9 @@
 const { ApolloServer } = require('apollo-server-lambda');
 
 module.exports = class GraphQLHandler {
+
+    schemaMgr: any;
+
     constructor (schemaMgr) {
         this.schemaMgr=schemaMgr
     }

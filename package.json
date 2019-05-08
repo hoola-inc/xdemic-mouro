@@ -7,7 +7,9 @@
     "test": "jest --verbose --runInBand",
     "coverage": "jest --coverage",
     "tdd": "jest --watchAll",
-    "start": "cp serverless-config/serverless-offline.yml ./serverless.yml && ./node_modules/.bin/slss offline --host 0.0.0.0 --port $PORT",
+    "build": "./node_modules/.bin/tsc -p .",
+    "config::offline": "cp serverless-config/serverless-offline.yml ./serverless.yml",
+    "start": "npm run build && npm run config::offline && ./node_modules/.bin/slss offline --host 0.0.0.0 --port $PORT",
     "test::functional": "node dev-scripts/create-newman-env http://localhost:3000 > env.json && newman run functional-tests/mouro.postman_collection.json -e env.json"
   },
   "repository": {
@@ -21,10 +23,16 @@
   },
   "homepage": "https://github.com/uport-project/mouro#readme",
   "devDependencies": {
+    "@types/graphql": "^14.2.0",
+    "@types/jest": "^24.0.12",
+    "aws-lambda": "^0.1.2",
     "aws-sdk-mock": "^4.3.1",
-    "jest": "^23.6.0",
+    "jest": "^24.8.0",
     "jest-html-reporter": "^2.5.0",
     "jest-junit": "^6.4.0",
+    "serverless-plugin-typescript": "^1.1.7",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.5",
     "uport-credentials": "^1.1.4"
   },
   "dependencies": {
@@ -38,6 +46,15 @@
     "serverless-domain-manager": "^3.2.1"
   },
   "jest": {
+    "globals": {
+      "ts-jest": {
+        "diagnostics": {
+          "ignoreCodes": [
+            151001
+          ]
+        }
+      }
+    },
     "coverageDirectory": "./coverage/",
     "collectCoverage": true,
     "testEnvironment": "node",
@@ -51,7 +68,16 @@
           "outputPath": "./test-reports/jest-report.html"
         }
       ]
-    ]
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "\\.(ts|tsx)$": "ts-jest"
+    },
+    "testRegex": "/__tests__/.*\\.(ts)$"
   },
   "jest-junit": {
     "outputDirectory": "./test-results/jest/",
