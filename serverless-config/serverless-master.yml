@@ -1,0 +1,41 @@
+service: mouro
+
+plugins:
+  - serverless-domain-manager
+  - serverless-plugin-aws-alerts
+
+provider:
+   name: aws
+   runtime: nodejs8.10
+   region: us-west-2
+   environment:
+      DYNAMODB_TABLE: ${self:service}-${opt:stage}
+   iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+custom: 
+  customDomain:
+    domainName: edge.uport.me
+    createRoute53Record: false
+  alerts:
+    dashboards: true
+    topics:
+      alarm: arn:aws:sns:us-west-2:113196216558:cloudwatch-alarm-to-slack
+    definitions: 
+      functionDuration:
+        threshold: 3000 # override avereage duration alert
+    alarms:
+      - functionThrottles
+      - functionErrors
+      - functionInvocations
+      - functionDuration
+  
+functions:
+  - ${file(serverless-config/functions.yml)}
+
+resources:
+  - ${file(serverless-config/dynamodb.yml)}

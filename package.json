@@ -9,6 +9,8 @@
     "tdd": "jest --watchAll",
     "build": "./node_modules/.bin/tsc -p .",
     "config::offline": "cp serverless-config/serverless-offline.yml ./serverless.yml",
+    "config::branch": "cp serverless-config/serverless-branch.yml ./serverless.yml",
+    "config::master": "cp serverless-config/serverless-master.yml ./serverless.yml",
     "start": "npm run build && npm run config::offline && ./node_modules/.bin/slss offline --host 0.0.0.0 --port $PORT",
     "test::functional": "node dev-scripts/create-newman-env http://localhost:3000 > env.json && newman run functional-tests/mouro.postman_collection.json -e env.json"
   },

@@ -71,6 +71,7 @@ jobs:
       - run:
           name: deploy-to-aws
           command: |
+            npm run config::branch
             sls deploy --stage `echo ${CIRCLE_BRANCH} | sed 's/\//-/g'`
   
   # Run functional tests
@@ -115,7 +116,7 @@ jobs:
       - run:
           name: deploy-to-aws
           command: |
-            cp serverless-config/serverless-custom-master.yml serverless-config/serverless-custom.yml
+            npm run config::master
             sls deploy --stage master
       - run: 
           name: create docker file
