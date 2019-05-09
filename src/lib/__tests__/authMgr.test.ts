@@ -4,10 +4,10 @@ const credentials = new Credentials({
     appName: 'Test App', did, privateKey
 })
 
-const sutMgr = require('../authMgr');
-
 describe('AuthMgr', () => {
     
+    const sutMgr = require('../authMgr');
+
     let sut;
     let validToken;
     const sub='0x0'
