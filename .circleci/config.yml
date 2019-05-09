@@ -67,7 +67,7 @@ jobs:
           at: ~/repo
       - run:
           name: install-dependencies
-          command: sudo npm i -g serverless
+          command: sudo npm i -g serverless@1.41.1 #1.42 has issues with cors
       - run: 
           name: config-serverless
           command: |
