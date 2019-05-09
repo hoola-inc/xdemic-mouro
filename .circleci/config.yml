@@ -129,7 +129,7 @@ jobs:
       - store_artifacts:
           path: test-reports
   
-  workflows:
+workflows:
   version: 2
   build-and-deploy:
     jobs:
@@ -142,4 +142,5 @@ jobs:
             - checkout-setup
       - functional-tests:
           requires:
-            - deploy    
+            - deploy
+    
