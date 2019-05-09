@@ -89,13 +89,12 @@ jobs:
             fi
       - run: 
           name: create-env.json
-          commnad: |
+          command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               node dev-scripts/create-newman-env https://edge.uport.me/ > env.json
             else
               node dev-scripts/create-newman-env https://edge.uport.space/`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'` > env.json
             fi
-            
       # Persist env.json
       - persist_to_workspace:
           root: ~/repo
