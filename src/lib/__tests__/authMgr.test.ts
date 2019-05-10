@@ -8,8 +8,8 @@ describe('AuthMgr', () => {
     
     const sutMgr = require('../authMgr');
 
-    let sut;
-    let validToken;
+    let sut: any;
+    let validToken: string;
     const sub='0x0'
 
     beforeAll((done) =>{
@@ -18,7 +18,7 @@ describe('AuthMgr', () => {
         credentials.createVerification({
             sub: sub,
             claims: {valid: 'Token'}
-        }).then((token)=>{
+        }).then((token: string)=>{
             validToken=token;
         }).then(done);
     })
@@ -32,10 +32,10 @@ describe('AuthMgr', () => {
 
         test('no token', (done)=> {
             sut.verify()
-            .then((resp)=> {
+            .then((resp: any)=> {
                 fail("shouldn't return"); done()
             })
-            .catch( (err)=>{
+            .catch( (err: Error)=>{
                 expect(err.message).toEqual('no authToken')
                 done()
             })
@@ -43,10 +43,10 @@ describe('AuthMgr', () => {
 
         test('invalid token', (done)=> {
             sut.verify("badtoken")
-            .then((resp)=> {
+            .then((resp: any)=> {
                 fail("shouldn't return"); done()
             })
-            .catch( (err)=>{
+            .catch( (err: Error)=>{
                 expect(err.message).toEqual('Incorrect format JWT')
                 done()
             })
@@ -54,13 +54,13 @@ describe('AuthMgr', () => {
 
         test('valid token', (done)=> {
             sut.verify(validToken)
-            .then((resp)=> {
+            .then((resp: any)=> {
                 expect(resp).not.toBeNull();
                 expect(resp.issuer).toEqual(did)
                 expect(resp.payload.sub).toEqual(sub)
                 done();
             })
-            .catch( (err)=>{
+            .catch( (err: Error)=>{
                 fail(err); done()
             })
         })
@@ -71,10 +71,10 @@ describe('AuthMgr', () => {
 
         test('no headers', (done)=> {
             sut.verifyAuthorizationHeader()
-            .then((resp)=> {
+            .then((resp: any)=> {
                 fail("shouldn't return"); done()
             })
-            .catch( (err)=>{
+            .catch( (err: Error)=>{
                 expect(err.message).toEqual('no headers')
                 done()
             })
@@ -82,10 +82,10 @@ describe('AuthMgr', () => {
 
         test('no authorization', (done)=> {
             sut.verifyAuthorizationHeader({})
-            .then((resp)=> {
+            .then((resp: any)=> {
                 fail("shouldn't return"); done()
             })
-            .catch( (err)=>{
+            .catch( (err: Error)=>{
                 expect(err.message).toEqual('no Authorization')
                 done()
             })
@@ -93,10 +93,10 @@ describe('AuthMgr', () => {
 
         test('bad authorization format (single part)', (done)=> {
             sut.verifyAuthorizationHeader({"Authorization": "bad"})
-            .then((resp)=> {
+            .then((resp: any)=> {
                 fail("shouldn't return"); done()
             })
-            .catch( (err)=>{
+            .catch( (err: Error)=>{
                 expect(err.message).toEqual('Format is Authorization: Bearer [token]')
                 done()
             })
@@ -105,10 +105,10 @@ describe('AuthMgr', () => {
 
         test('bad authorization format (no Bearer)', (done)=> {
             sut.verifyAuthorizationHeader({"Authorization": "bad format"})
-            .then((resp)=> {
+            .then((resp: any)=> {
                 fail("shouldn't return"); done()
             })
-            .catch( (err)=>{
+            .catch( (err: Error)=>{
                 expect(err.message).toEqual('Format is Authorization: Bearer [token]')
                 done()
             })
@@ -118,10 +118,10 @@ describe('AuthMgr', () => {
 
         test('bad authorization token', (done)=> {
             sut.verifyAuthorizationHeader({"Authorization": "Bearer bad"})
-            .then((resp)=> {
+            .then((resp: any)=> {
                 fail("shouldn't return"); done()
             })
-            .catch( (err)=>{
+            .catch( (err: Error)=>{
                 expect(err.message).toEqual('Incorrect format JWT')
                 done()
             })

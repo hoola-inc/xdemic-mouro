@@ -4,7 +4,7 @@ module.exports = class GraphQLHandler {
 
     schemaMgr: any;
 
-    constructor (schemaMgr) {
+    constructor (schemaMgr: any) {
         this.schemaMgr=schemaMgr
     }
 
@@ -12,12 +12,16 @@ module.exports = class GraphQLHandler {
         const schema = this.schemaMgr.getSchema()
         const server = new ApolloServer({
             schema,
-            context: ({ event, context }) => ({
-                headers: event.headers,
-                functionName: context.functionName,
-                event,
-                context,
-            }),
+            context: (p: any) => {
+                const event=p.event;
+                const context=p.context;
+                return ({
+                    headers: event.headers,
+                    functionName: context.functionName,
+                    event,
+                    context,
+                });
+            },
             introspection: true
         });
 

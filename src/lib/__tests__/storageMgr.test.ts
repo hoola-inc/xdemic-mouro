@@ -2,7 +2,7 @@
 describe('StorageMgr', () => {
     
     const sutMgr = require('../storageMgr');
-    let sut;
+    let sut: any;
 
     beforeAll((done) =>{
         sut = new sutMgr();
@@ -17,10 +17,10 @@ describe('StorageMgr', () => {
     describe("someQuery()", () => {
         test('no storage', (done)=> {
             sut.someQuery()
-            .then((resp)=> {
+            .then((resp: any)=> {
                 fail("shouldn't return"); done()
             })
-            .catch( (err)=>{
+            .catch( (err: Error)=>{
                 expect(err.message).toEqual('no underlying storage')
                 done()
             })

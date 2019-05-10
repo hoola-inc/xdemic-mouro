@@ -4,7 +4,7 @@ module.exports = class SchemaMgr {
 
     queryResolverMgr: any;
 
-    constructor(queryResolverMgr) {
+    constructor(queryResolverMgr: any) {
         this.queryResolverMgr = queryResolverMgr
     }
 
@@ -26,7 +26,7 @@ module.exports = class SchemaMgr {
         const resolvers = {
             Query: {
                 //Return identity for the API token issuer
-                me: async (parent, args, context, info) => {
+                me: async (parent: any, args: any, context: any, info: any) => {
                     const res=await this.queryResolverMgr.me(context.headers)
                     return res
                 },

@@ -6,13 +6,13 @@ module.exports = class AuthMgr {
         require('ethr-did-resolver').default()
     }
 
-    async verify(authToken) {
+    async verify(authToken: string) {
         if (!authToken) throw new Error('no authToken')
         const verifiedToken = await didJWT.verifyJWT(authToken);
         return verifiedToken;
    }
 
-   async verifyAuthorizationHeader(headers){
+   async verifyAuthorizationHeader(headers: any){
     if(!headers) throw new Error('no headers')
     if(!headers.Authorization) throw Error('no Authorization');
 
