@@ -3,7 +3,7 @@
     "preserveConstEnums": true,
     "strict": true,
     "sourceMap": true,
-    "target": "es6",
+    "target": "es5",
     "outDir": ".build/src",
     "moduleResolution": "node",
     "allowJs": true
