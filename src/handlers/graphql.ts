@@ -1,10 +1,13 @@
 const { ApolloServer } = require('apollo-server-lambda');
 
-module.exports = class GraphQLHandler {
+import { eventContextType } from '../lib/commonTypes';
+import { SchemaMgr } from '../lib/schemaMgr';
 
-    schemaMgr: any;
+export class GraphQLHandler {
 
-    constructor (schemaMgr: any) {
+    schemaMgr: SchemaMgr;
+
+    constructor (schemaMgr: SchemaMgr) {
         this.schemaMgr=schemaMgr
     }
 
@@ -12,7 +15,7 @@ module.exports = class GraphQLHandler {
         const schema = this.schemaMgr.getSchema()
         const server = new ApolloServer({
             schema,
-            context: (p: any) => {
+            context: (p: eventContextType) => {
                 const event=p.event;
                 const context=p.context;
                 return ({

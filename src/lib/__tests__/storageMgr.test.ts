@@ -1,11 +1,13 @@
+import {StorageMgr} from '../storageMgr';
+
 
 describe('StorageMgr', () => {
     
-    const sutMgr = require('../storageMgr');
-    let sut: any;
+    
+    let sut: StorageMgr;
 
     beforeAll((done) =>{
-        sut = new sutMgr();
+        sut = new StorageMgr();
         done();
     })
 
@@ -16,8 +18,8 @@ describe('StorageMgr', () => {
 
     describe("someQuery()", () => {
         test('no storage', (done)=> {
-            sut.someQuery()
-            .then((resp: any)=> {
+            sut.someQuery('')
+            .then((resp: string)=> {
                 fail("shouldn't return"); done()
             })
             .catch( (err: Error)=>{

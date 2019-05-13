@@ -1,8 +1,8 @@
-interface StorageInterface {
-    someQuery(someParam: any): string;
+export interface StorageInterface {
+    someQuery(someParam: string): string;
 }
 
-module.exports = class StorageMgr {
+export class StorageMgr {
 
     storage!: StorageInterface;
 
@@ -13,7 +13,7 @@ module.exports = class StorageMgr {
         if(process.env.MONGODB_URI) this.storage = new (require("./mongoMgr"))();
     }
 
-    async someQuery(someParam: any){
+    async someQuery(someParam: string){
         if (!this.storage) throw Error('no underlying storage')
         return await this.storage.someQuery(someParam);
     }

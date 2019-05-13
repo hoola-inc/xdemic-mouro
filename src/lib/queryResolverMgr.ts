@@ -1,15 +1,18 @@
+import { AuthMgr } from './authMgr';
+import { StorageMgr } from './storageMgr';
+import { headersType } from './commonTypes';
 
-module.exports = class QueryResolverMgr {
+export class QueryResolverMgr {
 
-    authMgr: any;
-    storageMgr: any;
+    authMgr: AuthMgr;
+    storageMgr: StorageMgr;
 
-    constructor(authMgr: any,storageMgr: any) {
+    constructor(authMgr: AuthMgr,storageMgr: StorageMgr) {
         this.authMgr = authMgr
         this.storageMgr = storageMgr
     }
 
-    async me(headers: any){
+    async me(headers: headersType){
         const authToken=await this.authMgr.verifyAuthorizationHeader(headers);
         return {
             did: authToken.issuer

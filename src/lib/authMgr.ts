@@ -1,6 +1,8 @@
 const didJWT = require('did-jwt')
 
-module.exports = class AuthMgr {
+import { headersType } from './commonTypes';
+
+export class AuthMgr {
 
     constructor() {
         require('ethr-did-resolver').default()
@@ -12,8 +14,7 @@ module.exports = class AuthMgr {
         return verifiedToken;
    }
 
-   async verifyAuthorizationHeader(headers: any){
-    if(!headers) throw new Error('no headers')
+   async verifyAuthorizationHeader(headers: headersType){
     if(!headers.Authorization) throw Error('no Authorization');
 
     const authHead = headers.Authorization;

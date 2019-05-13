@@ -1,10 +1,12 @@
 const makeExecutableSchema = require('graphql-tools').makeExecutableSchema;
 
-module.exports = class SchemaMgr {
+import { QueryResolverMgr } from './queryResolverMgr'
 
-    queryResolverMgr: any;
+export class SchemaMgr {
 
-    constructor(queryResolverMgr: any) {
+    queryResolverMgr: QueryResolverMgr;
+
+    constructor(queryResolverMgr: QueryResolverMgr) {
         this.queryResolverMgr = queryResolverMgr
     }
 

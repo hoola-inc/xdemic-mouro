@@ -1,10 +1,10 @@
 "use strict";
 
 //Load Mgrs
-const AuthMgr = require('./lib/authMgr');
-const StorageMgr = require('./lib/storageMgr');
-const QueryResolverMgr = require("./lib/queryResolverMgr");
-const SchemaMgr = require('./lib/schemaMgr');
+import {AuthMgr} from './lib/authMgr';
+import {StorageMgr} from './lib/storageMgr';
+import {QueryResolverMgr} from "./lib/queryResolverMgr";
+import {SchemaMgr} from './lib/schemaMgr';
 
 //Instanciate Mgr
 let authMgr = new AuthMgr();
@@ -13,7 +13,7 @@ let queryResolverMgr = new QueryResolverMgr(authMgr,storageMgr);
 let schemaMgr = new SchemaMgr(queryResolverMgr);
 
 //Load handlers
-const GraphQLHandler = require("./handlers/graphql");
+import {GraphQLHandler} from "./handlers/graphql";
 
 //Instanciate handlers
 const graphqlHandler = (new GraphQLHandler(schemaMgr)).getHandler()
