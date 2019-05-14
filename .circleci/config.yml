@@ -67,11 +67,39 @@ jobs:
           at: ~/repo
       - run:
           name: install-dependencies
-          command: sudo npm i -g serverless
+          command: sudo npm i -g serverless@1.41.1 #1.42 has issues with cors
+      - run: 
+          name: config-serverless
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              npm run config::master
+            else
+              npm run config::branch
+            fi
+      - run: 
+          name: build
+          command: npm run build
       - run:
           name: deploy-to-aws
           command: |
-            sls deploy --stage `echo ${CIRCLE_BRANCH} | sed 's/\//-/g'`
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              sls deploy --stage master
+            else
+              sls deploy --stage `echo ${CIRCLE_BRANCH} | sed 's/\//-/g'`
+            fi
+      - run: 
+          name: create-env.json
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              node dev-scripts/create-newman-env https://edge.uport.me/ > env.json
+            else
+              node dev-scripts/create-newman-env https://edge.uport.space/`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'` > env.json
+            fi
+      # Persist env.json
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - env.json
   
   # Run functional tests
   functional-tests:
@@ -87,7 +115,6 @@ jobs:
       - run:
           name: newman-tests
           command: | 
-            node dev-scripts/create-newman-env https://edge.uport.space/`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'` > env.json
             mkdir -p test-results/newman
             mkdir test-reports
             newman run functional-tests/mouro.postman_collection.json -e env.json --bail --reporters htmlextra,junitxray --reporter-htmlextra-export test-reports --reporter-junitxray-export test-results/newman/results.xml
@@ -101,26 +128,6 @@ jobs:
       - store_artifacts:
           path: test-reports
   
-  # release version
-  release:
-    working_directory: ~/repo
-    docker:
-      - image: circleci/node:8.10
-    steps:
-      - attach_workspace:
-          at: ~/repo
-      - run:
-          name: install-dependencies
-          command: sudo npm i -g serverless
-      - run:
-          name: deploy-to-aws
-          command: |
-            cp serverless-config/serverless-custom-master.yml serverless-config/serverless-custom.yml
-            sls deploy --stage master
-      - run: 
-          name: create docker file
-          command: echo "TODO create docker file"
-
 workflows:
   version: 2
   build-and-deploy:
@@ -132,19 +139,7 @@ workflows:
       - deploy:
           requires:
             - checkout-setup
-          filters:
-            branches:
-              ignore: master
       - functional-tests:
           requires:
             - deploy
-          filters:
-            branches:
-              ignore: master
-      - release:
-          requires:
-            - unit-tests
-          filters:
-            branches:
-              only: master
     

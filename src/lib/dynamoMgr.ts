@@ -4,7 +4,7 @@ module.exports = class DynamoMgr {
         console.log("DynamoDB Driver Started.")
     }
 
-    async someQuery(someParam){
+    async someQuery(someParam:string ){
     }
 }
 

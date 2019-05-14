@@ -1,7 +1,7 @@
 service: mouro
 
 plugins:
-  - serverless-offline
+  - serverless-plugin-typescript
   - serverless-domain-manager
   - serverless-plugin-aws-alerts
 
@@ -18,7 +18,11 @@ provider:
         - dynamodb:UpdateItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
-custom: ${file(serverless-config/serverless-custom.yml)}
+custom: 
+  customDomain:
+    domainName: edge.uport.space
+    basePath: ${opt:stage}
+    createRoute53Record: false
   
 functions:
   - ${file(serverless-config/functions.yml)}

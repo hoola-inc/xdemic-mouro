@@ -72,3 +72,8 @@ test-reports/
 test-results/
 
 env.json
+
+#Createa with npm run config::...
+serverless.yml
+
+.build/
