@@ -91,7 +91,7 @@ jobs:
           name: create-env.json
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              node dev-scripts/create-newman-env https://edge.uport.me/ > env.json
+              node dev-scripts/create-newman-env https://edge.uport.me > env.json
             else
               node dev-scripts/create-newman-env https://edge.uport.space/`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'` > env.json
             fi
