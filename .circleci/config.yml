@@ -101,8 +101,8 @@ jobs:
           paths:
             - env.json
   
-  # Run functional tests
-  functional-tests:
+  # Run e2e tests
+  e2e-tests:
     working_directory: ~/repo
     docker:
       - image: circleci/node:8.10
@@ -117,7 +117,7 @@ jobs:
           command: | 
             mkdir -p test-results/newman
             mkdir test-reports
-            newman run functional-tests/mouro.postman_collection.json -e env.json --bail --reporters htmlextra,junitxray --reporter-htmlextra-export test-reports --reporter-junitxray-export test-results/newman/results.xml
+            newman run e2e-tests/mouro.postman_collection.json -e env.json --bail --reporters htmlextra,junitxray --reporter-htmlextra-export test-reports --reporter-junitxray-export test-results/newman/results.xml
       # Store test results for the "Test Summary" tab
       - store_test_results:
           path: test-results
