@@ -139,7 +139,7 @@ workflows:
       - deploy:
           requires:
             - checkout-setup
-      - functional-tests:
+      - e2e-tests:
           requires:
             - deploy
     
