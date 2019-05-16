@@ -1,6 +1,7 @@
 import {SchemaMgr} from '../schemaMgr';
 import { QueryResolverMgr } from '../queryResolverMgr'
 import { GraphQLSchema } from 'graphql';
+import { EdgeResolverMgr } from '../edgeResolverMgr';
 
 
 describe('SchemaMgr', () => {
@@ -8,9 +9,10 @@ describe('SchemaMgr', () => {
     
     let sut: SchemaMgr;
     let mockQueryResolverMgr:QueryResolverMgr;  
+    let mockEdgeResolverMgr:EdgeResolverMgr;  
 
     beforeAll((done) =>{
-        sut = new SchemaMgr(mockQueryResolverMgr);
+        sut = new SchemaMgr(mockQueryResolverMgr, mockEdgeResolverMgr);
         done();
     })
 

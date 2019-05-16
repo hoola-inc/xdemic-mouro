@@ -1,10 +1,11 @@
-import {StorageMgr} from '../storageMgr';
+import {StorageMgr, PersistedEdgeType} from '../storageMgr';
 
 
 describe('StorageMgr', () => {
     
     
     let sut: StorageMgr;
+    let edge: PersistedEdgeType;
 
     beforeAll((done) =>{
         sut = new StorageMgr();
@@ -16,10 +17,17 @@ describe('StorageMgr', () => {
     });
 
 
-    describe("someQuery()", () => {
+    describe("addEdge()", () => {
         test('no storage', (done)=> {
-            sut.someQuery('')
-            .then((resp: string)=> {
+            edge={
+                hash: 'someHash',
+                from: 'did:from',
+                to: 'did:to',
+                type: 'someType',
+                time: new Date()
+            }
+            sut.addEdge(edge)
+            .then(()=> {
                 fail("shouldn't return"); done()
             })
             .catch( (err: Error)=>{

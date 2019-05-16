@@ -1,13 +1,19 @@
 const makeExecutableSchema = require('graphql-tools').makeExecutableSchema;
 
 import { QueryResolverMgr } from './queryResolverMgr'
+import { PersistedEdgeType, StorageMgr } from './storageMgr';
+import { EdgeResolverMgr } from './edgeResolverMgr';
+
+
 
 export class SchemaMgr {
 
     queryResolverMgr: QueryResolverMgr;
+    edgeResolverMgr: EdgeResolverMgr;
 
-    constructor(queryResolverMgr: QueryResolverMgr) {
+    constructor(queryResolverMgr: QueryResolverMgr, edgeResolverMgr: EdgeResolverMgr) {
         this.queryResolverMgr = queryResolverMgr
+        this.edgeResolverMgr = edgeResolverMgr
     }
 
     getSchema() {
@@ -23,6 +29,21 @@ export class SchemaMgr {
                 # Decentralized Identifier (DID) of the Identity
                 did: String!
             }
+
+            scalar Date
+
+            type Edge {
+                hash: ID!
+                from: Identity!
+                to: Identity!
+                type: String!
+                time: Date!
+                tag: String
+            }
+
+            type Mutation {
+                addEdge(edgeJWT: String): Edge
+            }
         `;
 
         const resolvers = {
@@ -33,6 +54,17 @@ export class SchemaMgr {
                     return res
                 },
             },
+            Mutation: {
+                addEdge: async (parent: any, args: any, context: any, info: any) => {
+                    try{
+                        const res=await this.edgeResolverMgr.addEdge(args.edgeJWT)
+                        return res
+                    }catch(e){
+                        console.error(e);
+                        throw e;
+                    }
+                }, 
+            }
         };
 
         return makeExecutableSchema({

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "755c8f37-f076-46c6-aeb1-e98988b96bab",
+		"_postman_id": "0e759bfd-f39e-44f1-9ab9-a5419d16bf3a",
 		"name": "mouro",
 		"description": "Mouro testing",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -57,7 +57,59 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\"query\": \"{\\n\\tme{\\n    did\\n  }\\n}\"\n}"
+							"raw": "{\n    \"query\": \"{\\n\\tme{\\n    did\\n  }\\n}\"\n}"
+						},
+						"url": {
+							"raw": "{{mouroUrl}}/graphql",
+							"host": [
+								"{{mouroUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addEdge",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "18b3cd09-8557-44c3-9ae9-48ba200fc422",
+								"exec": [
+									"pm.test(\"response is ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"response should be okay to process\", function () { ",
+									"    pm.response.to.not.be.error; ",
+									"});",
+									"",
+									"pm.test(\"did should be the did\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.me.did).to.eql(pm.environment.get(\"did\"));",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"query\":\"mutation {\\n  addEdge(edgeJWT: \\\"{{edgeJWT}}\\\") {\\n    hash\\n  }\\n}\\n\"\n}"
 						},
 						"url": {
 							"raw": "{{mouroUrl}}/graphql",

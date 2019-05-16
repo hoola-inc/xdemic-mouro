@@ -1,16 +1,20 @@
 "use strict";
+import { createJsendHandler } from './lib/jsend'
+
 
 //Load Mgrs
 import {AuthMgr} from './lib/authMgr';
 import {StorageMgr} from './lib/storageMgr';
 import {QueryResolverMgr} from "./lib/queryResolverMgr";
+import {EdgeResolverMgr} from './lib/edgeResolverMgr';
 import {SchemaMgr} from './lib/schemaMgr';
 
 //Instanciate Mgr
 let authMgr = new AuthMgr();
 let storageMgr = new StorageMgr();
 let queryResolverMgr = new QueryResolverMgr(authMgr,storageMgr);
-let schemaMgr = new SchemaMgr(queryResolverMgr);
+let edgeResolverMgr = new EdgeResolverMgr(storageMgr);
+let schemaMgr = new SchemaMgr(queryResolverMgr,edgeResolverMgr);
 
 //Load handlers
 import {GraphQLHandler} from "./handlers/graphql";

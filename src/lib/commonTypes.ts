@@ -3,11 +3,12 @@ export type headersType={
 }
 
 export type eventType = {
-    headers: headersType
+    headers?: headersType,
+    body?: any
 }
 
 export type contextType = {
-    functionName: string
+    functionName?: string
 }
 
 export type eventContextType = {
