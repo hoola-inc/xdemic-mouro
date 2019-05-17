@@ -1,36 +1,34 @@
 const { Credentials } = require('uport-credentials')
-const didJWT = require('did-jwt')
 const {did, privateKey}=Credentials.createIdentity();
+const blake = require('blakejs')
 
 const credentials = new Credentials({
     appName: 'Test', did, privateKey
 })
-  
-const signer = didJWT.SimpleSigner(privateKey);
 
 let authToken
 let edgeJWT
 
 credentials.createVerification({
-      sub: '*',
-      claims: {address: '*'}
+      sub: '0x0',
+      claims: {valid: 'Token'}
 })
 .then((res)=>{
     authToken=res;
 
     const payload={
-        sub: 'did:ethr:0xsomeSub',
+        sub: did,
         type: 'ALL',
         tag: 'test',
         claim:{
             email: 'email@example.com'
         }
     }
-
-    return didJWT.createJWT(payload,{issuer: did, signer})
+    return credentials.signJWT(payload)
 })
 .then((res)=>{
     edgeJWT=res;
+    edgeHash=blake.blake2bHex(edgeJWT);
     const env={
         "values": [
             {
@@ -48,8 +46,12 @@ credentials.createVerification({
             {
                 "key": "edgeJWT",
                 "value": edgeJWT
-            }
-
+            },
+            {
+                "key": "edgeHash",
+                "value": edgeHash
+            },
+            
         ]
     }
     console.log(JSON.stringify(env,null,3));

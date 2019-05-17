@@ -69,7 +69,7 @@ describe('AuthMgr', () => {
 
 
     describe("verifyAuthorizationHeader()", () => {
-
+        
         test('bad authorization format (single part)', (done)=> {
             sut.verifyAuthorizationHeader({"Authorization": "bad"})
             .then((resp: string)=> {

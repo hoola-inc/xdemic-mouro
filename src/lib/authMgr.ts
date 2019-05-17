@@ -15,7 +15,7 @@ export class AuthMgr {
    }
 
    async verifyAuthorizationHeader(headers: headersType){
-    if(!headers.Authorization) throw Error('no Authorization');
+    //if(!headers.Authorization) throw Error('no Authorization');
 
     const authHead = headers.Authorization;
 

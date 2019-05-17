@@ -25,7 +25,8 @@ module.exports = class PgMgr {
             tag VARCHAR(128) NULL, 
             claim JSONB NULL, 
             encPriv JSONB NULL, 
-            encShar JSONB NULL, 
+            encShar JSONB NULL,
+            jwt TEXT NOT NULL,
             CONSTRAINT edges_pkey PRIMARY KEY (hash)
         )
         `

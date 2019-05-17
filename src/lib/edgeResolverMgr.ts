@@ -12,6 +12,8 @@ export class EdgeResolverMgr {
     }
 
     async addEdge(edgeJWT: string){
+        console.log("edgeJWT:"+edgeJWT);
+        
         //blake2b hash of the original message
         const hash = blake.blake2bHex(edgeJWT)
         console.log("hash:"+hash);

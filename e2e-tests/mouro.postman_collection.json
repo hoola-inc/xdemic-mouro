@@ -89,7 +89,7 @@
 									"",
 									"pm.test(\"did should be the did\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.data.me.did).to.eql(pm.environment.get(\"did\"));",
+									"    pm.expect(jsonData.data.addEdge.hash).to.eql(pm.environment.get(\"edgeHash\"));",
 									"});",
 									"",
 									"",
@@ -109,7 +109,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"query\":\"mutation {\\n  addEdge(edgeJWT: \\\"{{edgeJWT}}\\\") {\\n    hash\\n  }\\n}\\n\"\n}"
+							"raw": "{\n    \"query\": \"mutation{addEdge(edgeJWT:\\\"{{edgeJWT}}\\\"){hash}}\"\n}"
 						},
 						"url": {
 							"raw": "{{mouroUrl}}/graphql",
