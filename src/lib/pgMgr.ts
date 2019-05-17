@@ -55,10 +55,11 @@ module.exports = class PgMgr {
             tag, 
             claim, 
             encPriv, 
-            encShar
+            encShar,
+            jwt
         )
         VALUES
-        ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+        ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
         ON CONFLICT ON CONSTRAINT edges_pkey 
         DO NOTHING;
         `
@@ -74,7 +75,8 @@ module.exports = class PgMgr {
                 edge.tag,
                 edge.claim,
                 edge.encPriv,
-                edge.encShar
+                edge.encShar,
+                edge.jwt
             ]);
             return res;
         } catch (e) {

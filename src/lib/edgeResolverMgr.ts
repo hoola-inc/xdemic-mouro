@@ -33,7 +33,8 @@ export class EdgeResolverMgr {
             tag:  verifiedJWT.payload.tag,
             claim: verifiedJWT.payload.claim,
             encPriv: verifiedJWT.payload.encPriv,
-            encShar: verifiedJWT.payload.encShar
+            encShar: verifiedJWT.payload.encShar,
+            jwt: edgeJWT
         }
         console.log("edge decoded")
         console.log(edgeObject);

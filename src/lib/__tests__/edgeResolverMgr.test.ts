@@ -57,7 +57,7 @@ describe('EdgeResolverMgr', () => {
             sut.addEdge(validToken)
             .then((resp: any)=> {
                 expect(resp).not.toBeNull();
-                expect(resp.from).toEqual(did)
+                expect(resp.from.did).toEqual(did)
                 done();
             })
             .catch( (err: Error)=>{

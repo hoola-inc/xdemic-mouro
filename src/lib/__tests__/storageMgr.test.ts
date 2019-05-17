@@ -24,7 +24,8 @@ describe('StorageMgr', () => {
                 from: 'did:from',
                 to: 'did:to',
                 type: 'someType',
-                time: new Date()
+                time: new Date(),
+                jwt: 'ey...'
             }
             sut.addEdge(edge)
             .then(()=> {

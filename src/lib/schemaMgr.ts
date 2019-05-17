@@ -34,6 +34,7 @@ export class SchemaMgr {
 
             type Edge {
                 hash: ID!
+                jwt: String!
                 from: Identity!
                 to: Identity!
                 type: String!

@@ -12,7 +12,8 @@ export type PersistedEdgeType = {
     tag?: string,
     claim?: any,
     encPriv?: any,
-    encShar?: any
+    encShar?: any,
+    jwt: string
 }
 
 export class StorageMgr {
