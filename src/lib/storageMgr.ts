@@ -21,8 +21,8 @@ export class StorageMgr {
 
     constructor() {
         if(process.env.PG_URL) this.storage = new (require("./pgMgr"))();
-        if(process.env.DYNAMODB_TABLE) this.storage = new (require("./dynamoMgr"))();
-        if(process.env.MONGODB_URI) this.storage = new (require("./mongoMgr"))();
+        //if(process.env.DYNAMODB_TABLE) this.storage = new (require("./dynamoMgr"))();
+        //if(process.env.MONGODB_URI) this.storage = new (require("./mongoMgr"))();
 
         //Init Storage
         if(this.storage!=null){
