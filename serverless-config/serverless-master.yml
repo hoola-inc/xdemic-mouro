@@ -10,13 +10,7 @@ provider:
    runtime: nodejs8.10
    region: us-west-2
    environment:
-      DYNAMODB_TABLE: ${self:service}-${opt:stage}
-   iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:GetItem
-        - dynamodb:UpdateItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+      PG_URL: ${ssm:/mouro/develop/PG_URL~true}
 
 custom: 
   customDomain:
@@ -37,6 +31,3 @@ custom:
   
 functions:
   - ${file(serverless-config/functions.yml)}
-
-resources:
-  - ${file(serverless-config/dynamodb.yml)}
