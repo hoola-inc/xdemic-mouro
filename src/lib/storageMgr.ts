@@ -1,6 +1,6 @@
 export interface StorageInterface {
-    init(): void;
-    addEdge(edge: PersistedEdgeType):void;
+    init(): Promise<void>;
+    addEdge(edge: PersistedEdgeType): Promise<any>;
 }
 
 export type PersistedEdgeType = {
@@ -30,12 +30,13 @@ export class StorageMgr {
             (async ()=>{
                 await this.storage.init();
             })();
+        }else{
+            throw Error('no underlying storage')
         }
         
     }
 
     async addEdge(edge: PersistedEdgeType){
-        if (!this.storage) throw Error('no underlying storage')
         return this.storage.addEdge(edge);
     }
 }
