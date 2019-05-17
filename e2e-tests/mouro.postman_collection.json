@@ -109,6 +109,10 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.addEdge.tag).to.eql(\"test\");",
 									"});",
+									"pm.test(\"jwt returned should be edgeJWT\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.addEdge.jwt).to.eql(pm.environment.get(\"edgeJWT\"));",
+									"});",
 									""
 								],
 								"type": "text/javascript"
@@ -125,7 +129,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"query\": \"mutation{addEdge(edgeJWT:\\\"{{edgeJWT}}\\\"){hash,from{did},to{did},type,time,tag}}\"\n\t\n}"
+							"raw": "{\n    \"query\": \"mutation{addEdge(edgeJWT:\\\"{{edgeJWT}}\\\"){hash,from{did},to{did},type,time,tag,jwt}}\"\n\t\n}"
 						},
 						"url": {
 							"raw": "{{mouroUrl}}/graphql",
