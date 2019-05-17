@@ -59,6 +59,8 @@ module.exports = class PgMgr {
         )
         VALUES
         ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+        ON CONFLICT ON CONSTRAINT edges_pkey 
+        DO NOTHING;
         `
         const client = this._getClient();
         try {

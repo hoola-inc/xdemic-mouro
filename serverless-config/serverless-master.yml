@@ -10,7 +10,7 @@ provider:
    runtime: nodejs8.10
    region: us-west-2
    environment:
-      PG_URL: ${ssm:/mouro/develop/PG_URL~true}
+      PG_URL: ${ssm:/mouro/master/PG_URL~true}
 
 custom: 
   customDomain:

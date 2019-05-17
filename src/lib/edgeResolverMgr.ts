@@ -40,7 +40,12 @@ export class EdgeResolverMgr {
 
         //Persist edge
         await this.storageMgr.addEdge(edgeObject);
-        return edgeObject;
+
+        //Return
+        let ret:any=edgeObject;
+        ret.from={ did: ret.from }
+        ret.to={did: ret.to}
+        return ret;
     }
 }
 

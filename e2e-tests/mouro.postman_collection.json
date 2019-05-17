@@ -87,12 +87,28 @@
 									"    pm.response.to.not.be.error; ",
 									"});",
 									"",
-									"pm.test(\"did should be the did\", function () {",
+									"pm.test(\"hash returned should be the edgeHash\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.addEdge.hash).to.eql(pm.environment.get(\"edgeHash\"));",
 									"});",
 									"",
+									"pm.test(\"from returned should be the did\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.addEdge.from.did).to.eql(pm.environment.get(\"did\"));",
+									"});",
 									"",
+									"pm.test(\"to returned should be the did\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.addEdge.to.did).to.eql(pm.environment.get(\"did\"));",
+									"});",
+									"pm.test(\"type returned should be ALL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.addEdge.type).to.eql(\"ALL\");",
+									"});",
+									"pm.test(\"tag returned should be test\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.addEdge.tag).to.eql(\"test\");",
+									"});",
 									""
 								],
 								"type": "text/javascript"
@@ -109,7 +125,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"query\": \"mutation{addEdge(edgeJWT:\\\"{{edgeJWT}}\\\"){hash}}\"\n}"
+							"raw": "{\n    \"query\": \"mutation{addEdge(edgeJWT:\\\"{{edgeJWT}}\\\"){hash,from{did},to{did},type,time,tag}}\"\n\t\n}"
 						},
 						"url": {
 							"raw": "{{mouroUrl}}/graphql",
