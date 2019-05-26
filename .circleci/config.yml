@@ -99,8 +99,8 @@ jobs:
           name: report-deployment
           command: |
             if [ "${CIRCLE_BRANCH}" != "master" ]; then
-              STORY_ID=`echo ${CIRCLE_BRANCH} | cut -d "/" -f 1` && \
-              DEPLOYMENT_LINK=https://edge.uport.space/`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'` && \
+              export STORY_ID=`echo ${CIRCLE_BRANCH} | cut -d "/" -f 1`
+              export DEPLOYMENT_LINK=https://edge.uport.space/`echo ${CIRCLE_BRANCH} | sed 's/\//-/g'` 
               curl -X POST https://api.uport.me/pt-webhook/deployments -d  '{"storyId":${STORY_ID}, "deploymentLink":"${DEPLOYMENT_LINK"}'
             fi
       # Persist env.json
