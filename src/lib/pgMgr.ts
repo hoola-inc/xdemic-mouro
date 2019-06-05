@@ -84,6 +84,35 @@ module.exports = class PgMgr {
         } finally {
             await client.end()
         }
+    }
+
+    async getEdge(hash: string){
+        //Get edge
+        const sql=`
+        SELECT 
+            hash, 
+            "from", 
+            "to", 
+            type, 
+            "time",
+            tag, 
+            claim, 
+            encPriv, 
+            encShar,
+            jwt
+        FROM edges
+        WHERE hash=$1
+        `
+        const client = this._getClient();
+        try {
+            await client.connect()
+            const res = await client.query(sql,[hash]);
+            return res.rows[0];
+        } catch (e) {
+            throw (e);
+        } finally {
+            await client.end()
+        }
 
         
 

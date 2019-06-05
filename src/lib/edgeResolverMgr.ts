@@ -46,6 +46,7 @@ export class EdgeResolverMgr {
         let ret:any=edgeObject;
         ret.from={ did: ret.from }
         ret.to={did: ret.to}
+        ret.claim=JSON.stringify(ret.claim)
         return ret;
     }
 }

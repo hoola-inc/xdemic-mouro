@@ -25,6 +25,11 @@ export class SchemaMgr {
                     const res=await this.queryResolverMgr.me(context.headers)
                     return res
                 },
+                // Return an edge by hash
+                edgeByHash: async (parent: any, args: any, context: any, info: any) => {
+                    const res=await this.queryResolverMgr.edgeByHash(context.headers,args.hash)
+                    return res
+                },
             },
             Mutation: {
                 addEdge: async (parent: any, args: any, context: any, info: any) => {

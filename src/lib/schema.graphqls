@@ -1,6 +1,10 @@
 type Query {
     # Return identity for the API token issuer
     me: Identity! 
+
+    # Return an edge by hash
+    edgeByHash(hash: ID!): Edge
+
 }
 
 #Identity type.
@@ -35,6 +39,10 @@ type Edge {
 }
 
 type Mutation {
+    # Add and edge.
     #
+    # Arguments
+    #
+    # edgeJWT: JWT with the following mandatory fields: iss, sub, type, iat. Optional: tag,claim,encPriv,encShar
     addEdge(edgeJWT: String): Edge
 }
