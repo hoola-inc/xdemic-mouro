@@ -25,8 +25,6 @@
   },
   "homepage": "https://github.com/uport-project/mouro#readme",
   "devDependencies": {
-    "@types/graphql": "^14.2.0",
-    "@types/jest": "^24.0.12",
     "aws-lambda": "^0.1.2",
     "aws-sdk-mock": "^4.3.1",
     "jest": "^24.8.0",
@@ -37,6 +35,8 @@
     "uport-credentials": "^1.1.4"
   },
   "dependencies": {
+    "@types/graphql": "^14.2.0",
+    "@types/jest": "^24.0.12",
     "apollo-server-lambda": "^2.3.1",
     "blakejs": "^1.1.0",
     "did-jwt": "^0.1.3",
