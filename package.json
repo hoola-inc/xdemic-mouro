@@ -30,7 +30,6 @@
     "jest": "^24.8.0",
     "jest-html-reporter": "^2.5.0",
     "jest-junit": "^6.4.0",
-    "serverless-plugin-typescript": "^1.1.7",
     "ts-jest": "^24.0.2",
     "uport-credentials": "^1.1.4"
   },
@@ -47,6 +46,7 @@
     "serverless-domain-manager": "^3.2.1",
     "serverless-offline": "^4.1.4",
     "serverless-plugin-aws-alerts": "^1.2.4",
+    "serverless-plugin-typescript": "^1.1.7",
     "typescript": "^3.4.5"
   },
   "jest": {
