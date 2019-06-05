@@ -1,7 +1,6 @@
 const makeExecutableSchema = require('graphql-tools').makeExecutableSchema;
-
+import { readFileSync } from 'fs'
 import { QueryResolverMgr } from './queryResolverMgr'
-import { PersistedEdgeType, StorageMgr } from './storageMgr';
 import { EdgeResolverMgr } from './edgeResolverMgr';
 
 
@@ -17,35 +16,7 @@ export class SchemaMgr {
     }
 
     getSchema() {
-        const typeDefs = `
-            
-            type Query {
-                # Return identity for the API token issuer
-                me: Identity! 
-            }
-
-            #Identity type.
-            type Identity {
-                # Decentralized Identifier (DID) of the Identity
-                did: String!
-            }
-
-            scalar Date
-
-            type Edge {
-                hash: ID!
-                jwt: String!
-                from: Identity!
-                to: Identity!
-                type: String!
-                time: Date!
-                tag: String
-            }
-
-            type Mutation {
-                addEdge(edgeJWT: String): Edge
-            }
-        `;
+        const typeDefs = readFileSync(__dirname + '/schema.graphqls', 'utf8')
 
         const resolvers = {
             Query: {
