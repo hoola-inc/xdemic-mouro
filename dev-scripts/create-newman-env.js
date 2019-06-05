@@ -9,13 +9,17 @@ const credentials = new Credentials({
 let authToken
 let edgeJWT
 
+//Create AuthToken
 credentials.createVerification({
-      sub: '0x0',
-      claims: {valid: 'Token'}
+      sub: did,
+      claim: {
+          access: []
+      }
 })
 .then((res)=>{
     authToken=res;
 
+    //Create Edge JWT
     const payload={
         sub: did,
         type: 'ALL',
