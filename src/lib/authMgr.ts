@@ -15,8 +15,6 @@ export class AuthMgr {
    }
 
    async verifyAuthorizationHeader(headers: headersType){
-    if(!headers.Authorization) throw Error('no Authorization');
-
     const authHead = headers.Authorization;
 
     const parts = authHead.split(" ");
@@ -24,7 +22,7 @@ export class AuthMgr {
     const scheme = parts[0];
     if (scheme !== "Bearer") throw Error("Format is Authorization: Bearer [token]");
  
-    return this.verify(parts[1]);
+    return await this.verify(parts[1]);
         
    }
 

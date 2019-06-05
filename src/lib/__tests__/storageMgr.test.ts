@@ -1,13 +1,19 @@
-import {StorageMgr} from '../storageMgr';
+import {StorageMgr, PersistedEdgeType} from '../storageMgr';
+
+process.env.PG_URL='fakePG_URL'
+
+jest.mock('../pgMgr')
 
 
 describe('StorageMgr', () => {
     
     
     let sut: StorageMgr;
+    let edge: PersistedEdgeType;
 
     beforeAll((done) =>{
         sut = new StorageMgr();
+        sut.storage.addEdge=jest.fn().mockImplementationOnce(()=>{return 'OK'})
         done();
     })
 
@@ -15,15 +21,30 @@ describe('StorageMgr', () => {
         expect(sut).not.toBeUndefined();
     });
 
+    test('no underlying storage', () => {
+        delete process.env.PG_URL;
+        try{
+            new StorageMgr();
+            fail("error not thrown")
+        }catch(err){
+            expect(err.message).toEqual('no underlying storage')
+        }
+    });
 
-    describe("someQuery()", () => {
-        test('no storage', (done)=> {
-            sut.someQuery('')
-            .then((resp: string)=> {
-                fail("shouldn't return"); done()
-            })
-            .catch( (err: Error)=>{
-                expect(err.message).toEqual('no underlying storage')
+
+    describe("addEdge()", () => {
+        test('happy path', (done)=> {
+            edge={
+                hash: 'someHash',
+                from: 'did:from',
+                to: 'did:to',
+                type: 'someType',
+                time: new Date(),
+                jwt: 'ey...'
+            }
+            sut.addEdge(edge)
+            .then((resp)=> {
+                expect(resp).toEqual('OK')
                 done()
             })
         })
