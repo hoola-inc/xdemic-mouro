@@ -15,10 +15,12 @@ export class SchemaMgr {
         this.edgeResolverMgr = edgeResolverMgr
     }
 
-    getSchema() {
-        const typeDefs = readFileSync(__dirname + '/schema.graphqls', 'utf8')
+    _getTypeDefs(){
+        return readFileSync(__dirname + '/schema.graphqls', 'utf8')
+    }
 
-        const resolvers = {
+    _getResolvers(){
+        return {
             Query: {
                 //Return identity for the API token issuer
                 me: async (parent: any, args: any, context: any, info: any) => {
@@ -33,17 +35,17 @@ export class SchemaMgr {
             },
             Mutation: {
                 addEdge: async (parent: any, args: any, context: any, info: any) => {
-                    try{
-                        const res=await this.edgeResolverMgr.addEdge(args.edgeJWT)
-                        return res
-                    }catch(e){
-                        console.error(e);
-                        throw e;
-                    }
+                    const res=await this.edgeResolverMgr.addEdge(args.edgeJWT)
+                    return res
                 }, 
             }
         };
 
+    }
+
+    getSchema() {
+        const typeDefs=this._getTypeDefs();
+        const resolvers = this._getResolvers();
         return makeExecutableSchema({
             typeDefs,
             resolvers,
