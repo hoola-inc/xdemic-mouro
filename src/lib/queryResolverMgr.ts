@@ -18,6 +18,21 @@ export class QueryResolverMgr {
             did: authToken.issuer
         }
     }
+
+    async edgeByHash(headers: headersType, hash: string){
+        const authToken=await this.authMgr.verifyAuthorizationHeader(headers);
+        let edge=await this.storageMgr.getEdge(hash)
+
+        //Check if authorized
+        //TODO: manage access tokens
+        if(edge.to != authToken.issuer) throw Error("Unauthorized")
+
+        //Transformations
+        edge.from={did: edge.from}
+        edge.to={did: edge.to}
+        edge.claim=JSON.stringify(edge.claim)
+        return edge;
+    }
 }
 
 

@@ -26,6 +26,7 @@ export class EdgeResolverMgr {
 
         const edgeObject:PersistedEdgeType={
             hash: hash,
+            jwt: edgeJWT,
             from: verifiedJWT.payload.iss,
             to:   verifiedJWT.payload.sub,
             type:  verifiedJWT.payload.type,
@@ -34,7 +35,6 @@ export class EdgeResolverMgr {
             claim: verifiedJWT.payload.claim,
             encPriv: verifiedJWT.payload.encPriv,
             encShar: verifiedJWT.payload.encShar,
-            jwt: edgeJWT
         }
         console.log("edge decoded")
         console.log(edgeObject);
@@ -46,6 +46,7 @@ export class EdgeResolverMgr {
         let ret:any=edgeObject;
         ret.from={ did: ret.from }
         ret.to={did: ret.to}
+        ret.claim=JSON.stringify(ret.claim)
         return ret;
     }
 }

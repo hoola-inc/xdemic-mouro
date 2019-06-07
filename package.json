@@ -1,13 +1,13 @@
 {
   "name": "mouro",
   "version": "1.1.1",
-  "description": "uPort Edge Server",
+  "description": "uPort Trustgraph Server",
   "main": "index.js",
   "scripts": {
     "test": "jest --verbose --runInBand",
     "coverage": "jest --coverage",
     "tdd": "jest --watchAll",
-    "build": "./node_modules/.bin/tsc -p .",
+    "build": "./node_modules/.bin/tsc -p . && cp ./src/lib/*.graphqls ./.build/src/lib/",
     "config::offline": "cp serverless-config/serverless-offline.yml ./serverless.yml",
     "config::branch": "cp serverless-config/serverless-branch.yml ./serverless.yml",
     "config::master": "cp serverless-config/serverless-master.yml ./serverless.yml",
@@ -25,19 +25,17 @@
   },
   "homepage": "https://github.com/uport-project/mouro#readme",
   "devDependencies": {
-    "@types/graphql": "^14.2.0",
-    "@types/jest": "^24.0.12",
     "aws-lambda": "^0.1.2",
     "aws-sdk-mock": "^4.3.1",
     "jest": "^24.8.0",
     "jest-html-reporter": "^2.5.0",
     "jest-junit": "^6.4.0",
-    "serverless-plugin-typescript": "^1.1.7",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.4.5",
     "uport-credentials": "^1.1.4"
   },
   "dependencies": {
+    "@types/graphql": "^14.2.0",
+    "@types/jest": "^24.0.12",
     "apollo-server-lambda": "^2.3.1",
     "blakejs": "^1.1.0",
     "did-jwt": "^0.1.3",
@@ -47,7 +45,9 @@
     "serverless": "^1.42.3",
     "serverless-domain-manager": "^3.2.1",
     "serverless-offline": "^4.1.4",
-    "serverless-plugin-aws-alerts": "^1.2.4"
+    "serverless-plugin-aws-alerts": "^1.2.4",
+    "serverless-plugin-typescript": "^1.1.7",
+    "typescript": "^3.4.5"
   },
   "jest": {
     "globals": {

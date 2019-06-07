@@ -96,4 +96,30 @@ describe('PgMgr', () => {
         })
     })
 
+    describe("getEdge()", () => {
+        test('fail', (done)=> {
+            pgClientMock.query.mockImplementationOnce(()=>{throw Error('fail')});
+            sut.getEdge("someHash")
+            .then((resp)=> {
+                fail("shouldn't return")
+            })
+            .catch((e)=>{
+                expect(pgClientMock.connect).toBeCalled()
+                expect(pgClientMock.query).toBeCalled()
+                expect(pgClientMock.end).toBeCalled()
+                expect(e.message).toEqual('fail')
+                done()
+            })
+        })
+
+        test('ok', (done)=> {
+            pgClientMock.query.mockImplementationOnce(()=>{return {rows:['OK']}});
+            sut.getEdge('someHash')
+            .then((resp)=> {
+                expect(resp).toEqual('OK')
+                done()
+            })
+        })
+    })
+
 });

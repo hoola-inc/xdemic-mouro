@@ -1,6 +1,7 @@
 export interface StorageInterface {
     init(): Promise<void>;
     addEdge(edge: PersistedEdgeType): Promise<any>;
+    getEdge(hash: string): Promise<any>;
 }
 
 export type PersistedEdgeType = {
@@ -23,8 +24,7 @@ export class StorageMgr {
     constructor() {
         if(process.env.PG_URL) this.storage = new (require("./pgMgr"))();
         //if(process.env.DYNAMODB_TABLE) this.storage = new (require("./dynamoMgr"))();
-        //if(process.env.MONGODB_URI) this.storage = new (require("./mongoMgr"))();
-
+        
         //Init Storage
         if(this.storage!=null){
             (async ()=>{
@@ -38,6 +38,10 @@ export class StorageMgr {
 
     async addEdge(edge: PersistedEdgeType){
         return this.storage.addEdge(edge);
+    }
+
+    async getEdge(hash: string){
+        return this.storage.getEdge(hash);
     }
 }
 
