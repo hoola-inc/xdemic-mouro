@@ -24,14 +24,41 @@ export class QueryResolverMgr {
         let edge=await this.storageMgr.getEdge(hash)
 
         //Check if authorized
-        //TODO: manage access tokens
-        if(edge.to != authToken.issuer) throw Error("Unauthorized")
+        if(!(await this.authMgr.isAllowed(authToken,edge))) throw Error("Unauthorized")
 
         //Transformations
         edge.from={did: edge.from}
         edge.to={did: edge.to}
         edge.claim=JSON.stringify(edge.claim)
         return edge;
+    }
+
+    async findEdges(headers: headersType, args: any){
+        const auth=await this.authMgr.verifyAuthorizationHeader(headers);
+        const params={args};
+        let edges=await this.storageMgr.findEdges(params)
+
+        let allowedEdges:any[]=[];
+
+        for(let i=0;i<edges.length;i++){
+            let edge=edges[i];
+            try{
+                //Check if authorized
+                if(await this.authMgr.isAllowed(auth,edge)){
+                    //Transformations
+                    edge.from={did: edge.from}
+                    edge.to={did: edge.to}
+                    edge.claim=JSON.stringify(edge.claim)
+                    allowedEdges.push(edge);
+                }
+            }catch(err){
+                console.error(err);
+            }
+
+        }
+            
+        console.log(allowedEdges)
+        return allowedEdges;
     }
 }
 

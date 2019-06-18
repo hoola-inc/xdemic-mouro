@@ -106,6 +106,9 @@ describe('QueryResolverMgr', () => {
                 jest.fn().mockResolvedValue({issuer: did})
             mockStorageMgr.getEdge=
                 jest.fn().mockResolvedValue({to: 'other-did'})
+            mockAuthMgr.isAllowed=
+                jest.fn().mockResolvedValueOnce(false)
+                
             sut.edgeByHash({Authorization: 'Bearer '+validToken},'hash')
             .then(()=> {
                 fail("shouldn't return"); done()
@@ -122,7 +125,9 @@ describe('QueryResolverMgr', () => {
                 jest.fn().mockResolvedValue({issuer: did})
             mockStorageMgr.getEdge=
                 jest.fn().mockResolvedValue({from: 'other-did', to: did, claim:{}})
-    
+            mockAuthMgr.isAllowed=
+                jest.fn().mockResolvedValue(true)
+
             sut.edgeByHash({Authorization: 'Bearer '+validToken},'hash')
             .then((resp: any)=> {
                 expect(resp).not.toBeNull();
@@ -135,6 +140,95 @@ describe('QueryResolverMgr', () => {
                 fail(err); done()
             })
         })
+    })
+
+    describe("findEdges()", ()=>{
+
+        test('authMgr.verifyAuthorizarionHeader fail', (done)=> {
+            mockAuthMgr.verifyAuthorizationHeader=
+                jest.fn().mockImplementationOnce(()=>{throw Error('fail')})
+            sut.findEdges({Authorization: 'Bearer '+validToken},'args')
+            .then(()=> {
+                fail("shouldn't return"); done()
+            })
+            .catch( (err: Error)=>{
+                expect(err.message).toEqual('fail')
+                done()
+            })
+        })
+
+        test('storageMgr.findEdges fail', (done)=> {
+            mockAuthMgr.verifyAuthorizationHeader=
+                jest.fn().mockResolvedValue({})
+            mockStorageMgr.findEdges=
+                jest.fn().mockImplementationOnce(()=>{throw Error('failS')})
+            sut.findEdges({Authorization: 'Bearer '+validToken},'args')
+            .then(()=> {
+                fail("shouldn't return"); done()
+            })
+            .catch( (err: Error)=>{
+                expect(err.message).toEqual('failS')
+                done()
+            })
+        })
+
+        test('authMgr.isAllowed fail', (done)=> {
+            mockAuthMgr.verifyAuthorizationHeader=
+                jest.fn().mockResolvedValue({})
+            mockStorageMgr.findEdges=
+                jest.fn().mockResolvedValue([{hash:'someEdgeHash'}])
+            mockAuthMgr.isAllowed=
+                jest.fn().mockImplementationOnce(()=>{throw Error('failI')})
+            sut.findEdges({Authorization: 'Bearer '+validToken},'args')
+            .then((resp: any)=> {
+                expect(resp).not.toBeNull();
+                expect(resp).toEqual([])
+                done();
+            })
+            .catch( (err: Error)=>{
+                fail(err); done()
+            })
+        })
+
+        test('edge not allowed', (done)=> {
+            mockAuthMgr.verifyAuthorizationHeader=
+                jest.fn().mockResolvedValue({})
+            mockStorageMgr.findEdges=
+                jest.fn().mockResolvedValue([{hash:'someEdgeHash'}])
+            mockAuthMgr.isAllowed=
+                jest.fn().mockResolvedValueOnce(false)
+            sut.findEdges({Authorization: 'Bearer '+validToken},'args')
+            .then((resp: any)=> {
+                expect(resp).not.toBeNull();
+                expect(resp).toEqual([])
+                done();
+            })
+            .catch( (err: Error)=>{
+                fail(err); done()
+            })
+        })
+
+        test('edge allowed (happy path)', (done)=> {
+            mockAuthMgr.verifyAuthorizationHeader=
+                jest.fn().mockResolvedValue({})
+            mockStorageMgr.findEdges=
+                jest.fn().mockResolvedValue([{from: 'other-did', to: did, claim:{}}])
+            mockAuthMgr.isAllowed=
+                jest.fn().mockResolvedValueOnce(true)
+            sut.findEdges({Authorization: 'Bearer '+validToken},'args')
+            .then((resp: any)=> {
+                expect(resp).not.toBeNull();
+                expect(resp[0]).not.toBeNull();
+                expect(resp[0].from).toEqual({did: 'other-did'})
+                expect(resp[0].to).toEqual({did: did})
+                expect(resp[0].claim).toEqual("{}")
+                done();
+            })
+            .catch( (err: Error)=>{
+                fail(err); done()
+            })
+        })
+
     })
 
 });

@@ -6,8 +6,10 @@ const credentials = new Credentials({
     appName: 'Test App', did, privateKey
 })
 
+const didJWT = require('did-jwt')
+jest.mock("did-jwt");
+
 describe('AuthMgr', () => {
-    
 
     let sut: AuthMgr;
     let validToken: string;
@@ -43,6 +45,7 @@ describe('AuthMgr', () => {
         })
 
         test('invalid token', (done)=> {
+            didJWT.verifyJWT.mockImplementationOnce(()=>{throw Error('Incorrect format JWT')})
             sut.verify("badtoken")
             .then(()=> {
                 fail("shouldn't return"); done()
@@ -54,6 +57,7 @@ describe('AuthMgr', () => {
         })
 
         test('valid token', (done)=> {
+            didJWT.verifyJWT.mockResolvedValueOnce({issuer: did, payload: {sub: sub}})
             sut.verify(validToken)
             .then((resp: any)=> {
                 expect(resp).not.toBeNull();
@@ -71,6 +75,8 @@ describe('AuthMgr', () => {
     describe("verifyAuthorizationHeader()", () => {
         
         test('bad authorization format (single part)', (done)=> {
+            didJWT.verifyJWT.mockImplementationOnce(()=>{throw Error('Incorrect format JWT')})
+
             sut.verifyAuthorizationHeader({"Authorization": "bad"})
             .then((resp: string)=> {
                 fail("shouldn't return"); done()
@@ -108,5 +114,28 @@ describe('AuthMgr', () => {
 
     })
 
+    describe("isAllowed()", () => {
 
+        let testEdge={
+            hash:'fakeHash',
+            from: 'did:ethr:from',
+            to: 'did:ethr:to',
+            type: '',
+            time: new Date(),
+            jwt: 'ey.fake.jwt'
+        }
+
+        test("false if empty authZ", (done)=>{
+            sut.isAllowed({access: []},testEdge)
+            .then((resp: any)=> {
+                expect(resp).not.toBeNull();
+                expect(resp).toEqual(false)
+                done();
+            })
+            .catch( (err: Error)=>{
+                fail(err); done()
+            })
+        })
+
+    })
 });

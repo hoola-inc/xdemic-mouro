@@ -2,6 +2,7 @@ export interface StorageInterface {
     init(): Promise<void>;
     addEdge(edge: PersistedEdgeType): Promise<any>;
     getEdge(hash: string): Promise<any>;
+    findEdges(params: any): Promise<any>;
 }
 
 export type PersistedEdgeType = {
@@ -42,6 +43,10 @@ export class StorageMgr {
 
     async getEdge(hash: string){
         return this.storage.getEdge(hash);
+    }
+
+    async findEdges(params: any){
+        return this.storage.findEdges(params);
     }
 }
 

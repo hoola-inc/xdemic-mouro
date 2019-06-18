@@ -1,9 +1,15 @@
 import { PersistedEdgeType } from "./storageMgr";
 const { Client } = require('pg')
+const sql = require('sql-bricks-postgres');
 
 module.exports = class PgMgr {
 
     constructor() {
+        //Small hack to make sure date is in UTC all the time
+        require('pg').types.setTypeParser(1114, (s:string)=>{
+            return new Date(Date.parse(s + " UTC"));
+        })
+        
         console.log("Pg Driver Started.")
     }
 
@@ -115,8 +121,39 @@ module.exports = class PgMgr {
         }
 
         
+        
 
     }
-}
 
+    async findEdges(params: any){
+        //find edges
+        let where={};
+        if(params.fromDID) where=sql.and(where,sql.in('from',params.fromDID))
+        if(params.toDID)   where=sql.and(where,sql.in('to'  ,params.toDID))
+        if(params.type)  where=sql.and(where,sql.in('type',params.type))
+        if(params.since) where=sql.and(where,sql.gte('time', sql("to_timestamp("+params.since+")")))
+        if(params.tag)   where=sql.and(where,sql.in('tag',params.tag))
+        
+        //TODO: param: claims
+
+        const q=sql.select().from('edges')
+            .where(where)
+            .orderBy('time')
+            .toString();
+        console.log(q);
+
+        const client = this._getClient();
+        try {
+            await client.connect()
+            const res = await client.query(q);
+            return res.rows;
+        } catch (e) {
+            throw (e);
+        } finally {
+            await client.end()
+        }
+
+    }
+
+}
 

@@ -9,6 +9,9 @@ const credentials = new Credentials({
 import { StorageMgr } from '../storageMgr';
 jest.mock('../storageMgr')
 
+const didJWT = require('did-jwt')
+jest.mock("did-jwt");
+
 describe('EdgeResolverMgr', () => {
     
     let sut: EdgeResolverMgr;
@@ -42,6 +45,8 @@ describe('EdgeResolverMgr', () => {
     describe("addEdge()", () => {
 
         test('empty jwt', (done)=> {
+            didJWT.verifyJWT.mockImplementationOnce(()=>{throw Error('no JWT passed into decodeJWT')})
+            
             sut.addEdge('')
             .then(()=> {
                 fail("shouldn't return"); done()
@@ -54,6 +59,7 @@ describe('EdgeResolverMgr', () => {
 
 
         test('valid token', (done)=> {
+            didJWT.verifyJWT.mockResolvedValueOnce({payload: {iss: did, sub: sub}})
             sut.addEdge(validToken)
             .then((resp: any)=> {
                 expect(resp).not.toBeNull();
