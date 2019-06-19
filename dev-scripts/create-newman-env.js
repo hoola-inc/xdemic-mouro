@@ -1,26 +1,32 @@
 const { Credentials } = require('uport-credentials')
-const {did, privateKey}=Credentials.createIdentity();
 const blake = require('blakejs')
 
+const {did, privateKey}=Credentials.createIdentity();
 const credentials = new Credentials({
     appName: 'Test', did, privateKey
 })
 
-let authToken
-let edgeJWT
+const id2=Credentials.createIdentity();
+const did2=id2.did
+const privateKey2=id2.privateKey
 
-//Create AuthToken
-credentials.createVerification({
-      sub: did,
-      claim: {
-          access: []
-      }
+const credentials2 = new Credentials({
+    appName: 'Test2', did: did2, privateKey: privateKey2
 })
-.then((res)=>{
-    authToken=res;
+
+
+const f=(async()=>{
+    //Create AuthToken
+    const authTokenPL={
+        sub: did,
+        claim: {
+            access: []
+        }
+    }
+    const authToken=await credentials.signJWT(authTokenPL)
 
     //Create Edge JWT
-    const payload={
+    const edgePayload={
         sub: did,
         type: 'ALL',
         tag: 'test',
@@ -28,35 +34,50 @@ credentials.createVerification({
             email: 'email@example.com'
         }
     }
-    return credentials.signJWT(payload)
-})
-.then((res)=>{
-    edgeJWT=res;
-    edgeHash=blake.blake2bHex(edgeJWT);
-    const env={
-        "values": [
-            {
-                "key": "mouroUrl",
-                "value": process.argv[2]
-            },
-            {
-                "key": "authToken",
-                "value": authToken
-            },
-            {
-                "key": "did",
-                "value": did
-            },
-            {
-                "key": "edgeJWT",
-                "value": edgeJWT
-            },
-            {
-                "key": "edgeHash",
-                "value": edgeHash
-            },
-            
-        ]
+    const edgeJWT  = await credentials2.signJWT(edgePayload);
+    const edgeHash = blake.blake2bHex(edgeJWT);
+    
+    //Create AuthzToken
+    const authzPL={
+        sub:did2,
+        claim: {
+            action: ['read'],
+            condition: {
+                from: did2
+            }
+        }
+    }
+    const authzToken=await credentials.signJWT(authzPL);
+    //Create AuthToken2
+    const authToken2PL={
+        sub: did2,
+        claim: {
+            access: [authzToken]
+        }
+    }
+    const authToken2=await credentials2.signJWT(authToken2PL)
+
+    //Env Vars
+    const envVars={
+        mouroUrl: process.argv[2],
+        authToken: authToken,
+        did: did,
+        did2: did2,
+        edgeJWT: edgeJWT,
+        edgeHash: edgeHash,
+        authToken2: authToken2
+        
+    }
+
+    const envId=(new Date()).getTime()
+    let env={
+        id: envId,
+        name: envId,
+        values: []
+    };
+    for (const key in envVars){
+        env.values.push({key: key, value: envVars[key]})
     }
     console.log(JSON.stringify(env,null,3));
-})
+})();
+

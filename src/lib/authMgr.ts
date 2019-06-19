@@ -2,7 +2,7 @@ const didJWT = require('did-jwt')
 import {DecisionTable} from 'decision_table';
 import { headersType } from './commonTypes';
 import { PersistedEdgeType } from './storageMgr';
-
+const blake = require('blakejs')
 
 export class AuthMgr {
 
@@ -30,37 +30,70 @@ export class AuthMgr {
 
    //Permssions handling: https://www.npmjs.com/package/decision_table
 
-   async isAllowed(authToken: any, edge: PersistedEdgeType) {
-        
+   async isAllowed(authToken: any, edge: PersistedEdgeType, action='read') {
         //Always have access to your own edges
         if(authToken.issuer == edge.to) return true;
     
-        //Parse authz tokens.
-        let dt = new DecisionTable();
         let isAllowed=false;
 
-        let authz: any[] = authToken.access;
-        authz.forEach(async (authzToken) => {
-            //Verify token
-            try{
-                const authZ=await this.verify(authzToken)
-                const condId=authZ.hash;
-                
-                //Parse authZ token                
-                
-                
-                //Create condition for authZ
-                dt.addCondition(condId, 
-                    ()=>{ return authZ.from==edge.from; }
-                );
+        if(authToken.payload.claim.access){
+            //Parse authz tokens.
+            let dt = new DecisionTable();
+            let access: any[] = authToken.payload.claim.access;
 
-                dt.addAction({whenTrue: [condId],execute:()=>{isAllowed=true}})
+            for(let i=0;i<access.length;i++){
+                const authzToken=access[i];
+                //Verify token
+                try{
+                    //Decode token
+                    const authZ=await this.verify(authzToken)
+                    
+                    //Create id
+                    const authZid = blake.blake2bHex(authzToken)
 
+                    //Check if issuer is the owner of the edge
+                    dt.addCondition(authZid+'-0', 
+                        ()=>{ return authZ.issuer == edge.to; }
+                    );
+                    //Check if sub is the authuser
+                    dt.addCondition(authZid+'-1', 
+                        ()=>{ return authZ.payload.sub == authToken.issuer; }
+                    );
 
-            }catch(err){}
-        });
+                    const claim=authZ.payload.claim;
 
-        dt.run();
+                    //Check if action of the authz token is the required
+                    dt.addCondition(authZid+'-2', 
+                        ()=>{ return claim.action==action; }
+                    );
+
+                    //Parse authZ token
+                    if(claim.condition.from){
+                        dt.addCondition(authZid+'-3',  
+                            ()=>{
+                                return claim.condition.from==edge.from; 
+                            }
+                        );
+                    }else{
+                        //Not a condition
+                        dt.addCondition(authZid+'-3',  
+                            ()=>{ return false; }
+                        );
+                    }
+
+                    dt.addAction({
+                        whenTrue: [authZid+'-0',authZid+'-1',authZid+'-2',authZid+'-3'],
+                        execute:()=>{isAllowed=true}
+                    })
+    
+    
+                }catch(err){ console.log(err)}
+            }
+    
+            dt.run();
+    
+        }
+        console.log((isAllowed?'':'not ')+'allowed to '+action+" :: "+authToken.issuer+" :: "+edge.hash)
         return isAllowed;
 
    }

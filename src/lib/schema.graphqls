@@ -7,7 +7,7 @@ type Query {
 
     # Find edges
     # returns an array of Edges
-    findEdges(fromDID:[String], toDID:[String], type:[String], since:Date, tag:[String], claims:[String]): [Edge!]!
+    findEdges(fromDID:[String], toDID:[String], type:[String], since:Date, tag:[String]): [Edge!]!
 }
 
 #Identity type.

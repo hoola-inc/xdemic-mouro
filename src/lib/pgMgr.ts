@@ -119,23 +119,17 @@ module.exports = class PgMgr {
         } finally {
             await client.end()
         }
-
-        
-        
-
     }
 
-    async findEdges(params: any){
+    async findEdges(args: any){
         //find edges
         let where={};
-        if(params.fromDID) where=sql.and(where,sql.in('from',params.fromDID))
-        if(params.toDID)   where=sql.and(where,sql.in('to'  ,params.toDID))
-        if(params.type)  where=sql.and(where,sql.in('type',params.type))
-        if(params.since) where=sql.and(where,sql.gte('time', sql("to_timestamp("+params.since+")")))
-        if(params.tag)   where=sql.and(where,sql.in('tag',params.tag))
+        if(args.fromDID) where=sql.and(where,sql.in('from',args.fromDID))
+        if(args.toDID)   where=sql.and(where,sql.in('to'  ,args.toDID))
+        if(args.type)  where=sql.and(where,sql.in('type',args.type))
+        if(args.since) where=sql.and(where,sql.gte('time', sql("to_timestamp("+args.since+")")))
+        if(args.tag)   where=sql.and(where,sql.in('tag',args.tag))
         
-        //TODO: param: claims
-
         const q=sql.select().from('edges')
             .where(where)
             .orderBy('time')

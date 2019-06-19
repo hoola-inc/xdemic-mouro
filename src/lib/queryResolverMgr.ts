@@ -22,6 +22,7 @@ export class QueryResolverMgr {
     async edgeByHash(headers: headersType, hash: string){
         const authToken=await this.authMgr.verifyAuthorizationHeader(headers);
         let edge=await this.storageMgr.getEdge(hash)
+        if(!edge) return null;
 
         //Check if authorized
         if(!(await this.authMgr.isAllowed(authToken,edge))) throw Error("Unauthorized")
@@ -35,8 +36,7 @@ export class QueryResolverMgr {
 
     async findEdges(headers: headersType, args: any){
         const auth=await this.authMgr.verifyAuthorizationHeader(headers);
-        const params={args};
-        let edges=await this.storageMgr.findEdges(params)
+        let edges=await this.storageMgr.findEdges(args)
 
         let allowedEdges:any[]=[];
 
@@ -44,7 +44,7 @@ export class QueryResolverMgr {
             let edge=edges[i];
             try{
                 //Check if authorized
-                if(await this.authMgr.isAllowed(auth,edge)){
+                if(await this.authMgr.isAllowed(auth,edge,)){
                     //Transformations
                     edge.from={did: edge.from}
                     edge.to={did: edge.to}
@@ -57,7 +57,7 @@ export class QueryResolverMgr {
 
         }
             
-        console.log(allowedEdges)
+        //console.log(allowedEdges)
         return allowedEdges;
     }
 }

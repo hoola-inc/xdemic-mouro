@@ -126,7 +126,7 @@ describe('AuthMgr', () => {
         }
 
         test("false if empty authZ", (done)=>{
-            sut.isAllowed({access: []},testEdge)
+            sut.isAllowed({payload:{claim: {access: []}}},testEdge)
             .then((resp: any)=> {
                 expect(resp).not.toBeNull();
                 expect(resp).toEqual(false)
