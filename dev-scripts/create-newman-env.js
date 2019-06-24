@@ -41,7 +41,7 @@ const f=(async()=>{
     const authzPL={
         sub:did2,
         claim: {
-            action: ['read'],
+            action: 'read',
             condition: {
                 from: did2
             }

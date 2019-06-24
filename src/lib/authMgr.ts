@@ -1,8 +1,16 @@
 const didJWT = require('did-jwt')
-import {DecisionTable} from 'decision_table';
 import { headersType } from './commonTypes';
-import { PersistedEdgeType } from './storageMgr';
-const blake = require('blakejs')
+
+export type AuthzConditionType ={
+    iss: string,
+    from?: string
+}
+
+export type AuthDataType = {
+    user: string, //DID of the authenticated user.
+    authzRead?: AuthzConditionType[]  //Array of authz data for read
+    authzDelete?: AuthzConditionType[]  //Array of authz data for delete
+}
 
 export class AuthMgr {
 
@@ -28,77 +36,52 @@ export class AuthMgr {
         
    }
 
-   //Permssions handling: https://www.npmjs.com/package/decision_table
 
-   async isAllowed(authToken: any, edge: PersistedEdgeType, action='read') {
-        //Always have access to your own edges
-        if(authToken.issuer == edge.to) return true;
+   async getAuthData(headers: headersType):Promise<AuthDataType>{
+
+    //TODO: Check cache for headers.Authorization
+
+    const authToken=await this.verifyAuthorizationHeader(headers);
     
-        let isAllowed=false;
+    let authData:AuthDataType={
+        user: authToken.issuer,
+    }
 
-        if(authToken.payload.claim.access){
-            //Parse authz tokens.
-            let dt = new DecisionTable();
-            let access: any[] = authToken.payload.claim.access;
+    if(authToken.payload.claim && authToken.payload.claim.access){
+        let access: any[] = authToken.payload.claim.access;
+        let authzRead: AuthzConditionType[] = [];
+        let authzDelete: AuthzConditionType[] = [];
+        for(let i=0;i<access.length;i++){
+            const authzToken=access[i];
+            //Verify token
+            try{
+                //Decode token
+                const authZ=await this.verify(authzToken)
 
-            for(let i=0;i<access.length;i++){
-                const authzToken=access[i];
-                //Verify token
-                try{
-                    //Decode token
-                    const authZ=await this.verify(authzToken)
-                    
-                    //Create id
-                    const authZid = blake.blake2bHex(authzToken)
-
-                    //Check if issuer is the owner of the edge
-                    dt.addCondition(authZid+'-0', 
-                        ()=>{ return authZ.issuer == edge.to; }
-                    );
-                    //Check if sub is the authuser
-                    dt.addCondition(authZid+'-1', 
-                        ()=>{ return authZ.payload.sub == authToken.issuer; }
-                    );
-
-                    const claim=authZ.payload.claim;
-
-                    //Check if action of the authz token is the required
-                    dt.addCondition(authZid+'-2', 
-                        ()=>{ return claim.action==action; }
-                    );
-
-                    //Parse authZ token
-                    if(claim.condition.from){
-                        dt.addCondition(authZid+'-3',  
-                            ()=>{
-                                return claim.condition.from==edge.from; 
-                            }
-                        );
-                    }else{
-                        //Not a condition
-                        dt.addCondition(authZid+'-3',  
-                            ()=>{ return false; }
-                        );
+                //Check if authZToken is issues to the right user
+                if (authZ.payload.sub == authData.user){
+                    const authzCond={
+                        iss: authZ.issuer,
+                        ...authZ.payload.claim.condition
                     }
 
-                    dt.addAction({
-                        whenTrue: [authZid+'-0',authZid+'-1',authZid+'-2',authZid+'-3'],
-                        execute:()=>{isAllowed=true}
-                    })
-    
-    
-                }catch(err){ console.log(err)}
-            }
-    
-            dt.run();
-    
-        }
-        console.log((isAllowed?'':'not ')+'allowed to '+action+" :: "+authToken.issuer+" :: "+edge.hash)
-        return isAllowed;
+                    switch(authZ.payload.claim.action){
+                        case('read'): authzRead.push(authzCond);break;
+                        case('delete'): authzDelete.push(authzCond);break;
+                    }
+                }
 
+            }catch(err){ console.log(err.message+' -> '+authzToken)}
+        }
+
+        if(authzRead.length>0) authData.authzRead=authzRead;
+        if(authzDelete.length>0) authData.authzDelete=authzDelete;
+    }
+
+    //TODO: Store Cache
+    return authData;
    }
 
-    
 }
 
 

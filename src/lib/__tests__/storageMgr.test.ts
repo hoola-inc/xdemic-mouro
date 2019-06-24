@@ -54,7 +54,7 @@ describe('StorageMgr', () => {
 
     describe("getEdge()", () => {
         test('happy path', (done)=> {
-            sut.getEdge('hash')
+            sut.getEdge('hash', {user: 'did:to'})
             .then((resp)=> {
                 expect(resp).toEqual('OK')
                 done()
@@ -64,7 +64,7 @@ describe('StorageMgr', () => {
 
     describe("findEdges()", () => {
         test('happy path', (done)=> {
-            sut.findEdges({})
+            sut.findEdges({}, {user: 'did:to'})
             .then((resp)=> {
                 expect(resp).toEqual('OK')
                 done()

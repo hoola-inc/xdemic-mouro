@@ -20,12 +20,11 @@ export class QueryResolverMgr {
     }
 
     async edgeByHash(headers: headersType, hash: string){
-        const authToken=await this.authMgr.verifyAuthorizationHeader(headers);
-        let edge=await this.storageMgr.getEdge(hash)
-        if(!edge) return null;
 
-        //Check if authorized
-        if(!(await this.authMgr.isAllowed(authToken,edge))) throw Error("Unauthorized")
+        const authData=await this.authMgr.getAuthData(headers);
+
+        let edge=await this.storageMgr.getEdge(hash,authData)
+        if(!edge) return null;
 
         //Transformations
         edge.from={did: edge.from}
@@ -35,30 +34,22 @@ export class QueryResolverMgr {
     }
 
     async findEdges(headers: headersType, args: any){
-        const auth=await this.authMgr.verifyAuthorizationHeader(headers);
-        let edges=await this.storageMgr.findEdges(args)
+        const authData=await this.authMgr.getAuthData(headers);
+        
+        let edges=await this.storageMgr.findEdges(args,authData)
 
-        let allowedEdges:any[]=[];
 
         for(let i=0;i<edges.length;i++){
             let edge=edges[i];
-            try{
-                //Check if authorized
-                if(await this.authMgr.isAllowed(auth,edge,)){
-                    //Transformations
-                    edge.from={did: edge.from}
-                    edge.to={did: edge.to}
-                    edge.claim=JSON.stringify(edge.claim)
-                    allowedEdges.push(edge);
-                }
-            }catch(err){
-                console.error(err);
-            }
-
+            //Transformations
+            edge.from={did: edge.from}
+            edge.to={did: edge.to}
+            edge.claim=JSON.stringify(edge.claim)
+            edges[i]=edge;
         }
             
         //console.log(allowedEdges)
-        return allowedEdges;
+        return edges;
     }
 }
 

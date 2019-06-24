@@ -73,8 +73,8 @@ describe('QueryResolverMgr', () => {
 
     describe("edgeByHash()", () => {
 
-        test('authMgr.verifyAuthorizarionHeader fail', (done)=> {
-            mockAuthMgr.verifyAuthorizationHeader=
+        test('authMgr.getAuthData fail', (done)=> {
+            mockAuthMgr.getAuthData=
                 jest.fn().mockImplementationOnce(()=>{throw Error('fail')})
             sut.edgeByHash({Authorization: 'Bearer '+validToken},'hash')
             .then(()=> {
@@ -87,8 +87,8 @@ describe('QueryResolverMgr', () => {
         })
 
         test('storageMgr.getEdge fail', (done)=> {
-            mockAuthMgr.verifyAuthorizationHeader=
-                jest.fn().mockResolvedValue({issuer: did})
+            mockAuthMgr.getAuthData=
+                jest.fn().mockResolvedValue({user: did})
             mockStorageMgr.getEdge=
                 jest.fn().mockImplementationOnce(()=>{throw Error('failS')})
             sut.edgeByHash({Authorization: 'Bearer '+validToken},'hash')
@@ -101,32 +101,24 @@ describe('QueryResolverMgr', () => {
             })
         })
 
-        test('unauthorized', (done)=> {
-            mockAuthMgr.verifyAuthorizationHeader=
-                jest.fn().mockResolvedValue({issuer: did})
-            mockStorageMgr.getEdge=
-                jest.fn().mockResolvedValue({to: 'other-did'})
-            mockAuthMgr.isAllowed=
-                jest.fn().mockResolvedValueOnce(false)
-                
+        test('storageMgr.getEdge returns null', (done)=> {
+            mockAuthMgr.getAuthData=
+                jest.fn().mockResolvedValue({user: did})
+                mockStorageMgr.getEdge=
+                jest.fn().mockResolvedValue(null)
             sut.edgeByHash({Authorization: 'Bearer '+validToken},'hash')
-            .then(()=> {
-                fail("shouldn't return"); done()
-            })
-            .catch( (err: Error)=>{
-                expect(err.message).toEqual('Unauthorized')
+            .then((resp)=> {
+                expect(resp).toBeNull();
                 done()
             })
         })
 
-
+        
         test('valid hash', (done)=> {
-            mockAuthMgr.verifyAuthorizationHeader=
-                jest.fn().mockResolvedValue({issuer: did})
+            mockAuthMgr.getAuthData=
+                jest.fn().mockResolvedValue({user: did})
             mockStorageMgr.getEdge=
                 jest.fn().mockResolvedValue({from: 'other-did', to: did, claim:{}})
-            mockAuthMgr.isAllowed=
-                jest.fn().mockResolvedValue(true)
 
             sut.edgeByHash({Authorization: 'Bearer '+validToken},'hash')
             .then((resp: any)=> {
@@ -144,8 +136,8 @@ describe('QueryResolverMgr', () => {
 
     describe("findEdges()", ()=>{
 
-        test('authMgr.verifyAuthorizarionHeader fail', (done)=> {
-            mockAuthMgr.verifyAuthorizationHeader=
+        test('authMgr.getAuthData fail', (done)=> {
+            mockAuthMgr.getAuthData=
                 jest.fn().mockImplementationOnce(()=>{throw Error('fail')})
             sut.findEdges({Authorization: 'Bearer '+validToken},'args')
             .then(()=> {
@@ -158,7 +150,7 @@ describe('QueryResolverMgr', () => {
         })
 
         test('storageMgr.findEdges fail', (done)=> {
-            mockAuthMgr.verifyAuthorizationHeader=
+            mockAuthMgr.getAuthData=
                 jest.fn().mockResolvedValue({})
             mockStorageMgr.findEdges=
                 jest.fn().mockImplementationOnce(()=>{throw Error('failS')})
@@ -172,49 +164,11 @@ describe('QueryResolverMgr', () => {
             })
         })
 
-        test('authMgr.isAllowed fail', (done)=> {
-            mockAuthMgr.verifyAuthorizationHeader=
-                jest.fn().mockResolvedValue({})
-            mockStorageMgr.findEdges=
-                jest.fn().mockResolvedValue([{hash:'someEdgeHash'}])
-            mockAuthMgr.isAllowed=
-                jest.fn().mockImplementationOnce(()=>{throw Error('failI')})
-            sut.findEdges({Authorization: 'Bearer '+validToken},'args')
-            .then((resp: any)=> {
-                expect(resp).not.toBeNull();
-                expect(resp).toEqual([])
-                done();
-            })
-            .catch( (err: Error)=>{
-                fail(err); done()
-            })
-        })
-
-        test('edge not allowed', (done)=> {
-            mockAuthMgr.verifyAuthorizationHeader=
-                jest.fn().mockResolvedValue({})
-            mockStorageMgr.findEdges=
-                jest.fn().mockResolvedValue([{hash:'someEdgeHash'}])
-            mockAuthMgr.isAllowed=
-                jest.fn().mockResolvedValueOnce(false)
-            sut.findEdges({Authorization: 'Bearer '+validToken},'args')
-            .then((resp: any)=> {
-                expect(resp).not.toBeNull();
-                expect(resp).toEqual([])
-                done();
-            })
-            .catch( (err: Error)=>{
-                fail(err); done()
-            })
-        })
-
-        test('edge allowed (happy path)', (done)=> {
-            mockAuthMgr.verifyAuthorizationHeader=
+        test('happy path', (done)=> {
+            mockAuthMgr.getAuthData=
                 jest.fn().mockResolvedValue({})
             mockStorageMgr.findEdges=
                 jest.fn().mockResolvedValue([{from: 'other-did', to: did, claim:{}}])
-            mockAuthMgr.isAllowed=
-                jest.fn().mockResolvedValueOnce(true)
             sut.findEdges({Authorization: 'Bearer '+validToken},'args')
             .then((resp: any)=> {
                 expect(resp).not.toBeNull();
