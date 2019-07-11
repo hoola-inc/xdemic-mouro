@@ -15,6 +15,7 @@ describe('StorageMgr', () => {
         sut = new StorageMgr();
         sut.storage.addEdge=jest.fn().mockImplementationOnce(()=>{return 'OK'})
         sut.storage.getEdge=jest.fn().mockImplementationOnce(()=>{return 'OK'})
+        sut.storage.findEdges=jest.fn().mockImplementationOnce(()=>{return 'OK'})
         done();
     })
 
@@ -53,7 +54,17 @@ describe('StorageMgr', () => {
 
     describe("getEdge()", () => {
         test('happy path', (done)=> {
-            sut.getEdge('hash')
+            sut.getEdge('hash', {user: 'did:to'})
+            .then((resp)=> {
+                expect(resp).toEqual('OK')
+                done()
+            })
+        })
+    })
+
+    describe("findEdges()", () => {
+        test('happy path', (done)=> {
+            sut.findEdges({}, {user: 'did:to'})
             .then((resp)=> {
                 expect(resp).toEqual('OK')
                 done()

@@ -1,35 +1,21 @@
 import {SchemaMgr} from '../schemaMgr';
-import { GraphQLSchema } from 'graphql';
+import { GraphQLSchema, Kind } from 'graphql';
 import { QueryResolverMgr } from '../queryResolverMgr';
 import { EdgeResolverMgr } from '../edgeResolverMgr';
+import { AuthMgr } from '../authMgr';
+import { StorageMgr } from '../storageMgr';
 
-let storageMgrMock = {
-    storage: {
-        init: jest.fn(),
-        addEdge: jest.fn(), 
-        getEdge: jest.fn()
-    },
-    addEdge: jest.fn(), 
-    getEdge: jest.fn()
-}
-let mockQueryResolverMgr = {
-    me: jest.fn(),
-    edgeByHash: jest.fn(),
-    authMgr: {
-        verify: jest.fn(),
-        verifyAuthorizationHeader: jest.fn()
-    },
-    storageMgr: storageMgrMock
-};
-
-let mockEdgeResolverMgr = {
-    storageMgr: storageMgrMock,
-    addEdge: jest.fn()
-}
+jest.mock('../queryResolverMgr')
+jest.mock('../edgeResolverMgr')
+jest.mock('../storageMgr')
 
 describe('SchemaMgr', () => {
     
-    
+    let mockAuthMgr:AuthMgr=new AuthMgr();
+    let mockStorageMgr:StorageMgr= new StorageMgr();
+
+    let mockQueryResolverMgr:QueryResolverMgr=new QueryResolverMgr(mockAuthMgr,mockStorageMgr);
+    let mockEdgeResolverMgr:EdgeResolverMgr=new EdgeResolverMgr(mockStorageMgr);
     let sut: SchemaMgr;
 
     beforeAll((done) =>{
@@ -44,7 +30,7 @@ describe('SchemaMgr', () => {
     describe('getResolver',()=>{
 
         test('Query.me',(done)=>{
-            mockQueryResolverMgr.me.mockImplementationOnce((h)=>{return h})
+            mockQueryResolverMgr.me=jest.fn().mockImplementationOnce((h)=>{return h})
             const me = sut._getResolvers()['Query'].me;
             me({},{},{headers: 'head'},{})
             .then((res:any)=>{
@@ -55,7 +41,7 @@ describe('SchemaMgr', () => {
         })
 
         test('Query.edgeByHash',(done)=>{
-            mockQueryResolverMgr.edgeByHash.mockImplementationOnce((h,hs)=>{return [h,hs]})
+            mockQueryResolverMgr.edgeByHash=jest.fn().mockImplementationOnce((h,hs)=>{return [h,hs]})
             const edgeByHash = sut._getResolvers()['Query'].edgeByHash;
             edgeByHash({},{hash: 'hash'},{headers: 'head'},{})
             .then((res:any)=>{
@@ -65,8 +51,19 @@ describe('SchemaMgr', () => {
             })
         })
 
+        test('Query.findEdges',(done)=>{
+            mockQueryResolverMgr.findEdges=jest.fn().mockImplementationOnce((h,args)=>{return [h,args]})
+            const findEdges = sut._getResolvers()['Query'].findEdges;
+            findEdges({},'args',{headers: 'head'},{})
+            .then((res:any)=>{
+                expect(res).toEqual(['head','args']);
+                expect(mockQueryResolverMgr.findEdges).toBeCalledWith('head','args')
+                done();
+            })
+        })
+
         test('Mutation.addEdge',(done)=>{
-            mockEdgeResolverMgr.addEdge.mockImplementationOnce((e)=>{return [e]})
+            mockEdgeResolverMgr.addEdge=jest.fn().mockImplementationOnce((e)=>{return [e]})
             const addEdge = sut._getResolvers()['Mutation'].addEdge;
             addEdge({},{edgeJWT: 'edge'},{},{})
             .then((res:any)=>{
@@ -74,6 +71,15 @@ describe('SchemaMgr', () => {
                 expect(mockEdgeResolverMgr.addEdge).toBeCalledWith('edge')
                 done();
             })
+        })
+
+        test('Date Scalar Type',()=>{
+            const dateType = sut._getResolvers()['Date'];
+            expect(dateType.parseValue('v')).toEqual('v');
+            expect(dateType.serialize(new Date(100000000000))).toEqual(100000000);
+            expect(dateType.parseLiteral({kind: Kind.BOOLEAN, value:false},null)).toBeNull();
+            expect(dateType.parseLiteral({kind: Kind.INT, value:'1'},null)).toEqual(1);
+            
         })
     })
 

@@ -64,7 +64,7 @@ The access tokens are JWT's signed by the owner of the edge. The owner of each e
     iss: <did of the owner of the edge>,
     sub: <did of the access grantee>,
     claim: {
-        action: ["read","delete"]
+        action: "read"
         condition: {
             from: <did of the access grantee> 
         }
