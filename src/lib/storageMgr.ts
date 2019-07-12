@@ -13,6 +13,8 @@ export type PersistedEdgeType = {
     to: string,
     type: string,
     time: Date,
+    visibility: string,
+    retention?: number,
     tag?: string,
     claim?: any,
     encPriv?: any,

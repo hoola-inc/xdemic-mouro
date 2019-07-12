@@ -33,12 +33,22 @@ type Edge {
     time: Date!
     # tag of the edge. "tag" on the JWT
     tag: String
+    # visibility of the edge. "vis" on the JWT
+    visibility: VisibilityEnum
+    # retention period (in seconds) of the edge. "ret" on the JWT
+    retention: Int
     # unencrypted data of the edge. "claim" on the JWT
     claim: String
     # personal encrypted data of the edge. "encPriv" on the JWT
     encPriv: String
     # shared encrypted data of the edge. "encShar" on the JWT
     encShar: String
+}
+
+enum VisibilityEnum {
+  TO
+  BOTH
+  ANY
 }
 
 type Mutation {

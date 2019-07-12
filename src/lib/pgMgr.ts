@@ -29,12 +29,15 @@ module.exports = class PgMgr {
       "to" VARCHAR(64) NOT NULL, 
       type VARCHAR(128) NOT NULL, 
       "time" TIMESTAMP NOT NULL, -- from iat
+      visibility VARCHAR(4) NOT NULL,
+      retention INTEGER NULL,
       tag VARCHAR(128) NULL, 
       claim JSONB NULL, 
       encPriv JSONB NULL, 
       encShar JSONB NULL,
       jwt TEXT NOT NULL,
-      CONSTRAINT edges_pkey PRIMARY KEY (hash)
+      CONSTRAINT edges_pkey PRIMARY KEY (hash),
+      CHECK (visibility IN ('TO', 'BOTH', 'ANY'))
     )
     `
     const client = this._getClient();
@@ -59,6 +62,8 @@ module.exports = class PgMgr {
       "to", 
       type, 
       "time",
+      visibility,
+      retention,
       tag, 
       claim, 
       encPriv, 
@@ -66,7 +71,7 @@ module.exports = class PgMgr {
       jwt
     )
     VALUES
-    ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+    ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
     ON CONFLICT ON CONSTRAINT edges_pkey 
     DO NOTHING;
     `
@@ -79,6 +84,8 @@ module.exports = class PgMgr {
         edge.to,
         edge.type,
         edge.time,
+        edge.visibility,
+        edge.retention,
         edge.tag,
         edge.claim,
         edge.encPriv,
@@ -147,8 +154,25 @@ module.exports = class PgMgr {
 
 
   _getPermsReadWhere(authData: AuthDataType){
+    //Visibility access
     //Owner access
-    let own=sql.eq('to',authData.user)
+    let own=sql.and(
+              sql.eq('visibility','TO'),
+              sql.eq('to',authData.user)
+            )
+
+    //Both access
+    let both=sql.and(
+              sql.eq('visibility','BOTH'),
+              sql.or(
+                sql.eq('from',authData.user),
+                sql.eq('to',authData.user)
+              )
+            )
+
+    //add ANY
+    let any=sql.eq('visibility','ANY');
+    let vis=sql.or(own,both,any);
 
     let perms={};
     //Perms (authz)
@@ -166,7 +190,7 @@ module.exports = class PgMgr {
             }
         }
     }
-    return sql.or(own,perms);
+    return sql.or(vis,perms);
   }
 
 }

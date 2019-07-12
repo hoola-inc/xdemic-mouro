@@ -24,17 +24,21 @@ export class EdgeResolverMgr {
         const verifiedJWT = await didJWT.verifyJWT(edgeJWT);
         console.log(verifiedJWT);
 
+        const pl=verifiedJWT.payload;
+
         const edgeObject:PersistedEdgeType={
             hash: hash,
             jwt: edgeJWT,
-            from: verifiedJWT.payload.iss,
-            to:   verifiedJWT.payload.sub,
-            type:  verifiedJWT.payload.type,
-            time: new Date(verifiedJWT.payload.iat*1000),
-            tag:  verifiedJWT.payload.tag,
-            claim: verifiedJWT.payload.claim,
-            encPriv: verifiedJWT.payload.encPriv,
-            encShar: verifiedJWT.payload.encShar,
+            from: pl.iss,
+            to:   pl.sub,
+            type:  pl.type,
+            time: new Date(pl.iat*1000),
+            visibility: this.visToVisibility(pl.vis),
+            retention: pl.ret,
+            tag:  pl.tag,
+            claim: pl.claim,
+            encPriv: pl.encPriv,
+            encShar: pl.encShar,
         }
         console.log("edge decoded")
         console.log(edgeObject);
@@ -48,6 +52,19 @@ export class EdgeResolverMgr {
         ret.to={did: ret.to}
         ret.claim=JSON.stringify(ret.claim)
         return ret;
+    }
+
+    visToVisibility(vis:string):string{
+        //Default visibility is BOTH
+        const DEFAULT='BOTH';
+        if(vis == undefined) return DEFAULT;
+
+        if(vis.toUpperCase()=='TO') return 'TO';
+        if(vis.toUpperCase()=='BOTH') return 'BOTH';
+        if(vis.toUpperCase()=='ANY') return 'ANY';
+
+        return DEFAULT;
+
     }
 }
 
