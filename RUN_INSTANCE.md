@@ -46,6 +46,17 @@ If you want to create it on `master`:
 sls deploy --stage master
 ```
 
+## Express Server
 
+Using Sqlite
+
+```
+PORT=3000 SQLITE_FILE=./mouro.sqlite npm start 
+```
+
+Using Postgresql
+```
+PORT=3000 PG_URL=postgres://..... npm start 
+```
 
 
