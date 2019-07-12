@@ -2,7 +2,7 @@ const makeExecutableSchema = require('graphql-tools').makeExecutableSchema;
 import { readFileSync } from 'fs'
 import { QueryResolverMgr } from './queryResolverMgr'
 import { EdgeResolverMgr } from './edgeResolverMgr';
-import { GraphQLScalarType } from 'graphql/type/definition';
+import { GraphQLScalarType, GraphQLEnumType } from 'graphql/type/definition';
 import { Kind } from 'graphql/language/kinds';
 
 
@@ -63,6 +63,11 @@ export class SchemaMgr {
                   return null;
                 },
             }),
+            VisibilityEnum: {
+                'TO': 'TO',
+                'BOTH': 'BOTH',
+                'ANY': 'ANY'
+            }
 
         };
 

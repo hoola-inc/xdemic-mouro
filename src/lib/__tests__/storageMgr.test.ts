@@ -41,6 +41,7 @@ describe('StorageMgr', () => {
                 from: 'did:from',
                 to: 'did:to',
                 type: 'someType',
+                visibility: 'BOTH',
                 time: new Date(),
                 jwt: 'ey...'
             }

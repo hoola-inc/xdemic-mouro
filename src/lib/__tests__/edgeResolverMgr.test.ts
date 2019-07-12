@@ -72,5 +72,22 @@ describe('EdgeResolverMgr', () => {
         })
     })
 
+    describe("visToVisibility()", () => {
 
+        test('To', ()=> {
+            expect(sut.visToVisibility("to")).toEqual('TO')
+        })
+
+        test('Both', ()=> {
+            expect(sut.visToVisibility("both")).toEqual('BOTH')
+        })
+
+        test('Any', ()=> {
+            expect(sut.visToVisibility("any")).toEqual('ANY')
+        })
+
+        test('Other', ()=> {
+            expect(sut.visToVisibility("Other")).toEqual('BOTH')
+        })
+    })
 });
