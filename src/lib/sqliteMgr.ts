@@ -105,8 +105,6 @@ module.exports = class SQLiteMgr {
       return res;
     } catch (e) {
       throw (e);
-    } finally {
-      await db.close()
     }
   }
 

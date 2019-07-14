@@ -3,6 +3,7 @@ import {StorageMgr, PersistedEdgeType} from '../storageMgr';
 process.env.PG_URL='fakePG_URL'
 
 jest.mock('../pgMgr')
+jest.mock('../sqliteMgr')
 
 
 describe('StorageMgr', () => {
@@ -30,6 +31,17 @@ describe('StorageMgr', () => {
             fail("error not thrown")
         }catch(err){
             expect(err.message).toEqual('no underlying storage')
+        }
+    });
+
+
+    test('SQLite storage', () => {
+        process.env.SQLITE_FILE='./something';
+        try{
+            const sM=new StorageMgr();
+            expect(sM).not.toBeUndefined();
+        }catch(err){
+            fail(err)
         }
     });
 
