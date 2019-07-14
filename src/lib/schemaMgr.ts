@@ -53,7 +53,6 @@ export class SchemaMgr {
                   return value; // value from the client
                 },
                 serialize(value) {
-                    //value is a Date object
                     return value.getTime()/1000; // value sent to the client
                 },
                 parseLiteral(ast) {

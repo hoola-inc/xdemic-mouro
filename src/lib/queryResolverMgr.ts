@@ -37,7 +37,7 @@ export class QueryResolverMgr {
         const authData=await this.authMgr.getAuthData(headers);
         
         let edges=await this.storageMgr.findEdges(args,authData)
-
+        console
 
         for(let i=0;i<edges.length;i++){
             let edge=edges[i];
