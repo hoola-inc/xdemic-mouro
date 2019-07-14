@@ -29,6 +29,7 @@ export class StorageMgr {
     constructor() {
         if(process.env.PG_URL) this.storage = new (require("./pgMgr"))();
         //if(process.env.DYNAMODB_TABLE) this.storage = new (require("./dynamoMgr"))();
+        if(process.env.SQLITE_FILE) this.storage = new (require("./sqliteMgr"))();
         
         //Init Storage
         if(this.storage!=null){
