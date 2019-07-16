@@ -78,7 +78,7 @@ module.exports = class SQLiteMgr {
         edge.visibility,
         edge.retention,
         edge.tag,
-        edge.claim,
+        JSON.stringify(edge.claim),
         edge.encPriv,
         edge.encShar,
         edge.jwt
@@ -135,6 +135,7 @@ module.exports = class SQLiteMgr {
       if(res){
         res=res.map((r:any)=>{
             r.time= (new Date((r.time)));
+            r.claim= r.claim && JSON.parse(r.claim);
             return r;
         })
       }
