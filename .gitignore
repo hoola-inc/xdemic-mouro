@@ -77,3 +77,4 @@ env.json
 serverless.yml
 
 .build/
+mouro.sqlite
