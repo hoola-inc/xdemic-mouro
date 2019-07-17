@@ -30,9 +30,7 @@ const f=(async()=>{
         sub: did,
         type: 'ALL',
         tag: 'test',
-        claim:{
-            email: 'email@example.com'
-        }
+        data: 'anyData'
     }
     const edgeJWT  = await credentials2.signJWT(edgePayload);
     const edgeHash = blake.blake2bHex(edgeJWT);

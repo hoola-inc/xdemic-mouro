@@ -32,9 +32,7 @@ module.exports = class PgMgr {
       visibility VARCHAR(4) NOT NULL,
       retention INTEGER NULL,
       tag VARCHAR(128) NULL, 
-      claim JSONB NULL, 
-      encPriv JSONB NULL, 
-      encShar JSONB NULL,
+      data TEXT NULL, 
       jwt TEXT NOT NULL,
       CONSTRAINT edges_pkey PRIMARY KEY (hash),
       CHECK (visibility IN ('TO', 'BOTH', 'ANY'))
@@ -65,13 +63,11 @@ module.exports = class PgMgr {
       visibility,
       retention,
       tag, 
-      claim, 
-      encPriv, 
-      encShar,
+      data,
       jwt
     )
     VALUES
-    ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+    ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
     ON CONFLICT ON CONSTRAINT edges_pkey 
     DO NOTHING;
     `
@@ -87,9 +83,7 @@ module.exports = class PgMgr {
         edge.visibility,
         edge.retention,
         edge.tag,
-        edge.claim,
-        edge.encPriv,
-        edge.encShar,
+        edge.data,
         edge.jwt
       ]);
       return res;

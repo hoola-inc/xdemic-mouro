@@ -105,6 +105,10 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.addEdge.type).to.eql(\"ALL\");",
 									"});",
+									"pm.test(\"visibility returned should be BOTH\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.addEdge.visibility).to.eql(\"BOTH\");",
+									"});",
 									"pm.test(\"tag returned should be test\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.addEdge.tag).to.eql(\"test\");",
@@ -129,7 +133,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"query\": \"mutation{addEdge(edgeJWT:\\\"{{edgeJWT}}\\\"){hash,jwt,from {did},to{did},type,time,tag,claim,encPriv,encShar}}\"\n}"
+							"raw": "{\n    \"query\": \"mutation{addEdge(edgeJWT:\\\"{{edgeJWT}}\\\"){hash,jwt,from {did},to{did},type,time,visibility,retention,tag,data}}\"\n}"
 						},
 						"url": {
 							"raw": "{{mouroUrl}}/graphql",
@@ -211,7 +215,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"query\": \"{edgeByHash(hash:\\\"{{edgeHash}}\\\"){hash,jwt,from {did},to{did},type,time,tag,claim,encPriv,encShar}}\"\n}"
+							"raw": "{\n    \"query\": \"{edgeByHash(hash:\\\"{{edgeHash}}\\\"){hash,jwt,from {did},to{did},type,time,tag,data}}\"\n}"
 						},
 						"url": {
 							"raw": "{{mouroUrl}}/graphql",
@@ -259,6 +263,10 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.edgeByHash.type).to.eql(\"ALL\");",
 									"});",
+									"pm.test(\"visibility returned should be BOTH\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.edgeByHash.visibility).to.eql(\"BOTH\");",
+									"});",
 									"pm.test(\"tag returned should be test\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.edgeByHash.tag).to.eql(\"test\");",
@@ -293,7 +301,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"query\": \"{edgeByHash(hash:\\\"{{edgeHash}}\\\"){hash,jwt,from {did},to{did},type,time,tag,claim,encPriv,encShar}}\"\n}"
+							"raw": "{\n    \"query\": \"{edgeByHash(hash:\\\"{{edgeHash}}\\\"){hash,jwt,from {did},to{did},type,time,visibility,retention,tag,data}}\"\n}"
 						},
 						"url": {
 							"raw": "{{mouroUrl}}/graphql",
@@ -341,6 +349,10 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.findEdges[0].type).to.eql(\"ALL\");",
 									"});",
+									"pm.test(\"visibility returned should be BOTH\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.findEdges[0].visibility).to.eql(\"BOTH\");",
+									"});",
 									"pm.test(\"tag returned should be test\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.findEdges[0].tag).to.eql(\"test\");",
@@ -375,7 +387,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"query\": \"{findEdges(toDID:[\\\"{{did}}\\\"]){hash,jwt,from {did},to{did},type,time,tag,claim,encPriv,encShar}}\"\n}"
+							"raw": "{\n    \"query\": \"{findEdges(toDID:[\\\"{{did}}\\\"]){hash,jwt,from {did},to{did},type,time,visibility,retention,tag,data}}\"\n}"
 						},
 						"url": {
 							"raw": "{{mouroUrl}}/graphql",
@@ -423,6 +435,10 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.findEdges[0].type).to.eql(\"ALL\");",
 									"});",
+									"pm.test(\"visibility returned should be BOTH\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.findEdges[0].visibility).to.eql(\"BOTH\");",
+									"});",
 									"pm.test(\"tag returned should be test\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.findEdges[0].tag).to.eql(\"test\");",
@@ -457,7 +473,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"query\": \"{findEdges(fromDID:[\\\"{{did2}}\\\"]){hash,jwt,from {did},to{did},type,time,tag,claim,encPriv,encShar}}\"\n}"
+							"raw": "{\n    \"query\": \"{findEdges(fromDID:[\\\"{{did2}}\\\"]){hash,jwt,from {did},to{did},type,time,visibility,retention,tag,data}}\"\n}"
 						},
 						"url": {
 							"raw": "{{mouroUrl}}/graphql",

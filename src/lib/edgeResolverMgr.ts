@@ -36,9 +36,7 @@ export class EdgeResolverMgr {
             visibility: this.visToVisibility(pl.vis),
             retention: pl.ret,
             tag:  pl.tag,
-            claim: pl.claim,
-            encPriv: pl.encPriv,
-            encShar: pl.encShar,
+            data: pl.data
         }
         console.log("edge decoded")
         console.log(edgeObject);
@@ -50,7 +48,6 @@ export class EdgeResolverMgr {
         let ret:any=edgeObject;
         ret.from={ did: ret.from }
         ret.to={did: ret.to}
-        ret.claim=JSON.stringify(ret.claim)
         return ret;
     }
 

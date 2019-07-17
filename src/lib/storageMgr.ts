@@ -16,9 +16,7 @@ export type PersistedEdgeType = {
     visibility: string,
     retention?: number,
     tag?: string,
-    claim?: any,
-    encPriv?: any,
-    encShar?: any,
+    data?: any
     jwt: string
 }
 

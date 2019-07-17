@@ -27,9 +27,7 @@ describe('EdgeResolverMgr', () => {
             sub: did,
             type: 'ALL',
             tag: 'test',
-            claim:{
-                email: 'email@example.com'
-            }
+            data: 'somedata'
         }
         credentials.signJWT(payload)
         .then((token: string)=>{

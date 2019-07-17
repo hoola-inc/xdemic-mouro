@@ -37,12 +37,8 @@ type Edge {
     visibility: VisibilityEnum
     # retention period (in seconds) of the edge. "ret" on the JWT
     retention: Int
-    # unencrypted data of the edge. "claim" on the JWT
-    claim: String
-    # personal encrypted data of the edge. "encPriv" on the JWT
-    encPriv: String
-    # shared encrypted data of the edge. "encShar" on the JWT
-    encShar: String
+    # Data of the edge, can be unencrypted or encrypted. "data" on the JWT
+    data: String
 }
 
 enum VisibilityEnum {
