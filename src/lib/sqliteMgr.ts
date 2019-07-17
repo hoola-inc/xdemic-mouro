@@ -30,9 +30,7 @@ module.exports = class SQLiteMgr {
       visibility VARCHAR(4) NOT NULL,
       retention INTEGER NULL,
       tag VARCHAR(128) NULL, 
-      claim TEXT NULL, 
-      encPriv TEXT NULL, 
-      encShar TEXT NULL,
+      data TEXT NULL, 
       jwt TEXT NOT NULL
     )
     `
@@ -58,13 +56,11 @@ module.exports = class SQLiteMgr {
       visibility,
       retention,
       tag, 
-      claim, 
-      encPriv, 
-      encShar,
+      data, 
       jwt
     )
     VALUES
-    ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+    ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
     ON CONFLICT(edges.hash) DO NOTHING;
     `
     const db = await this._getDatabase();
@@ -78,9 +74,7 @@ module.exports = class SQLiteMgr {
         edge.visibility,
         edge.retention,
         edge.tag,
-        JSON.stringify(edge.claim),
-        edge.encPriv,
-        edge.encShar,
+        edge.data,
         edge.jwt
       ]);
       return res;
@@ -135,7 +129,6 @@ module.exports = class SQLiteMgr {
       if(res){
         res=res.map((r:any)=>{
             r.time= (new Date((r.time)));
-            r.claim= r.claim && JSON.parse(r.claim);
             return r;
         })
       }
