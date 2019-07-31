@@ -1,9 +1,9 @@
-import { PersistedEdgeType } from "./storageMgr";
+import { PersistedEdgeType, StorageInterface } from "./storageMgr";
 import { AuthDataType, AuthzConditionType } from "./authMgr";
 const { Client } = require('pg')
 const sql = require('sql-bricks-postgres');
 
-module.exports = class PgMgr {
+module.exports = class PgMgr implements StorageInterface{
 
   constructor() {
     //Small hack to make sure date is in UTC all the time
@@ -94,7 +94,7 @@ module.exports = class PgMgr {
     }
   }
 
-  async getEdge(hash: string, authData: AuthDataType){
+  async getEdge(hash: string, authData: AuthDataType | null){
     let whereClause=sql.eq('hash',hash);
     
     //Add perms to whereClause
@@ -115,7 +115,7 @@ module.exports = class PgMgr {
     }
   }
 
-  async findEdges(args: any, authData: AuthDataType){
+  async findEdges(args: any, authData: AuthDataType | null){
     //find edges
     let where={};
     
@@ -147,30 +147,35 @@ module.exports = class PgMgr {
   }
 
 
-  _getPermsReadWhere(authData: AuthDataType){
+  _getPermsReadWhere(authData: AuthDataType | null){
     //Visibility access
-    //Owner access
-    let own=sql.and(
-              sql.eq('visibility','TO'),
-              sql.eq('to',authData.user)
-            )
-
-    //Both access
-    let both=sql.and(
-              sql.eq('visibility','BOTH'),
-              sql.or(
-                sql.eq('from',authData.user),
-                sql.eq('to',authData.user)
-              )
-            )
-
+    
     //add ANY
     let any=sql.eq('visibility','ANY');
-    let vis=sql.or(own,both,any);
+    let vis=any;
+
+    if(authData!==null){
+      //Owner access
+      let own=sql.and(
+                sql.eq('visibility','TO'),
+                sql.eq('to',authData.user)
+              )
+
+      //Both access
+      let both=sql.and(
+                sql.eq('visibility','BOTH'),
+                sql.or(
+                  sql.eq('from',authData.user),
+                  sql.eq('to',authData.user)
+                )
+              )
+
+      vis=sql.or(own,both,any);
+    }
 
     let perms={};
     //Perms (authz)
-    if(authData.authzRead){
+    if(authData!==null && authData.authzRead){
         for(let i=0;i<authData.authzRead.length;i++){
             const authzCond:AuthzConditionType=authData.authzRead[i];
             

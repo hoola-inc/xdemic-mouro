@@ -167,6 +167,17 @@ describe('SqliteMgr', () => {
             })
         })
 
+        test('ok (null authData)', (done)=> {
+            mockSqliteDb.all.mockReset()
+            mockSqliteDb.all.mockImplementationOnce(()=>{return null});
+            sut.findEdges({},null)
+            .then((resp)=> {
+                expect(resp).toEqual(null)
+                expect(mockSqliteDb.all).toBeCalledWith("SELECT * FROM edges WHERE visibility = 'ANY' ORDER BY time")
+                done()
+            })
+        })
+
         test('ok (no data)', (done)=> {
             mockSqliteDb.all.mockReset()
             mockSqliteDb.all.mockImplementationOnce(()=>{return null});
@@ -220,5 +231,4 @@ describe('SqliteMgr', () => {
             })
         })
     })
-
 });

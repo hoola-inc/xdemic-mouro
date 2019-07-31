@@ -167,6 +167,17 @@ describe('PgMgr', () => {
             })
         })
 
+        test('ok (null authData)', (done)=> {
+            pgClientMock.query.mockReset()
+            pgClientMock.query.mockImplementationOnce(()=>{return {rows: null}});
+            sut.findEdges({},null)
+            .then((resp)=> {
+                expect(resp).toEqual(null)
+                expect(pgClientMock.query).toBeCalledWith("SELECT * FROM edges WHERE visibility = 'ANY' ORDER BY time")
+                done()
+            })
+        })
+
         test('ok (empty)', (done)=> {
             pgClientMock.query.mockReset()
             pgClientMock.query.mockImplementationOnce(()=>{return {rows: ['OK']}});

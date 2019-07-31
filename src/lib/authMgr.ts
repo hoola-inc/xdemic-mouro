@@ -12,20 +12,29 @@ export type AuthDataType = {
     authzDelete?: AuthzConditionType[]  //Array of authz data for delete
 }
 
+export type VerifiedJWTType = {
+    issuer: string,
+    payload: {
+        sub: string,
+        claim?: any
+    }
+}
+
 export class AuthMgr {
 
     constructor() {
         require('ethr-did-resolver').default()
     }
 
-    async verify(authToken: string) {
+    async verify(authToken: string): Promise<VerifiedJWTType> {
         if (!authToken) throw new Error('no authToken')
         const verifiedToken = await didJWT.verifyJWT(authToken);
         return verifiedToken;
    }
 
-   async verifyAuthorizationHeader(headers: headersType){
+   async verifyAuthorizationHeader(headers: headersType):Promise<VerifiedJWTType|null>{
     const authHead = headers.Authorization;
+    if(authHead===undefined) return null;
 
     const parts = authHead.split(" ");
     if (parts.length !== 2) throw Error("Format is Authorization: Bearer [token]");
@@ -37,11 +46,12 @@ export class AuthMgr {
    }
 
 
-   async getAuthData(headers: headersType):Promise<AuthDataType>{
+   async getAuthData(headers: headersType):Promise<AuthDataType | null>{
 
     //TODO: Check cache for headers.Authorization
 
     const authToken=await this.verifyAuthorizationHeader(headers);
+    if(authToken==null) return null;
     
     let authData:AuthDataType={
         user: authToken.issuer,

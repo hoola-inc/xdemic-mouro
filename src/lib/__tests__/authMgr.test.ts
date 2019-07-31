@@ -112,6 +112,13 @@ describe('AuthMgr', () => {
       })
     })
 
+    test('no authorization token', ()=>{
+      sut.verifyAuthorizationHeader({})
+      .then((data)=> {
+        expect(data).toBeNull()
+      })
+    })
+
   })
 
 
@@ -128,6 +135,18 @@ describe('AuthMgr', () => {
         done()
       })
     })
+
+    test('null token', (done)=> {
+      sut.getAuthData({})
+      .then((resp: any)=> {
+        expect(resp).toBeNull();
+        done();
+      })
+      .catch( (err: Error)=>{
+        fail(err); done()
+      })
+    })
+
 
     test('valid token (no claim)', (done)=> {
       didJWT.verifyJWT.mockResolvedValueOnce({issuer: did, payload: {}})

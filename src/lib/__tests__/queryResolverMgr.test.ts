@@ -54,6 +54,20 @@ describe('QueryResolverMgr', () => {
             })
         })
 
+        test('null token', (done)=> {
+            mockAuthMgr.verifyAuthorizationHeader=
+                jest.fn().mockResolvedValueOnce(null);
+    
+                sut.me({})
+            .then((resp: any)=> {
+                expect(resp).not.toBeNull();
+                expect(resp).toEqual({})
+                done();
+            })
+            .catch( (err: Error)=>{
+                fail(err); done()
+            })
+        })
 
         test('valid token', (done)=> {
             mockAuthMgr.verifyAuthorizationHeader=

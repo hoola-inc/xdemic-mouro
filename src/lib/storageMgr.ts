@@ -3,8 +3,8 @@ import { AuthDataType } from "./authMgr";
 export interface StorageInterface {
     init(): Promise<void>;
     addEdge(edge: PersistedEdgeType): Promise<any>;
-    getEdge(hash: string, authData: AuthDataType): Promise<any>;
-    findEdges(params: any, authData: AuthDataType): Promise<any>;
+    getEdge(hash: string, authData: AuthDataType | null): Promise<any>;
+    findEdges(params: any, authData: AuthDataType | null): Promise<any>;
 }
 
 export type PersistedEdgeType = {
@@ -44,11 +44,11 @@ export class StorageMgr {
         return this.storage.addEdge(edge);
     }
 
-    async getEdge(hash: string, authData: AuthDataType){
+    async getEdge(hash: string, authData: AuthDataType | null){
         return this.storage.getEdge(hash, authData);
     }
 
-    async findEdges(params: any, authData: AuthDataType){
+    async findEdges(params: any, authData: AuthDataType | null){
         return this.storage.findEdges(params, authData);
     }
 }
