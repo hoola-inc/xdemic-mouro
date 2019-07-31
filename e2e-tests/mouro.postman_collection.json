@@ -105,9 +105,9 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.addEdge.type).to.eql(\"ALL\");",
 									"});",
-									"pm.test(\"visibility returned should be BOTH\", function () {",
+									"pm.test(\"visibility returned should be ANY\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.data.addEdge.visibility).to.eql(\"BOTH\");",
+									"    pm.expect(jsonData.data.addEdge.visibility).to.eql(\"ANY\");",
 									"});",
 									"pm.test(\"tag returned should be test\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -181,6 +181,10 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.edgeByHash.type).to.eql(\"ALL\");",
 									"});",
+									"pm.test(\"visibility returned should be ANY\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.edgeByHash.visibility).to.eql(\"ANY\");",
+									"});",
 									"pm.test(\"tag returned should be test\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.edgeByHash.tag).to.eql(\"test\");",
@@ -215,7 +219,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"query\": \"{edgeByHash(hash:\\\"{{edgeHash}}\\\"){hash,jwt,from {did},to{did},type,time,tag,data}}\"\n}"
+							"raw": "{\n    \"query\": \"{edgeByHash(hash:\\\"{{edgeHash}}\\\"){hash,jwt,from {did},to{did},type,time,visibility,retention,tag,data}}\"\n}"
 						},
 						"url": {
 							"raw": "{{mouroUrl}}/graphql",
@@ -263,9 +267,9 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.edgeByHash.type).to.eql(\"ALL\");",
 									"});",
-									"pm.test(\"visibility returned should be BOTH\", function () {",
+									"pm.test(\"visibility returned should be ANY\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.data.edgeByHash.visibility).to.eql(\"BOTH\");",
+									"    pm.expect(jsonData.data.edgeByHash.visibility).to.eql(\"ANY\");",
 									"});",
 									"pm.test(\"tag returned should be test\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -349,9 +353,9 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.findEdges[0].type).to.eql(\"ALL\");",
 									"});",
-									"pm.test(\"visibility returned should be BOTH\", function () {",
+									"pm.test(\"visibility returned should be ANY\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.data.findEdges[0].visibility).to.eql(\"BOTH\");",
+									"    pm.expect(jsonData.data.findEdges[0].visibility).to.eql(\"ANY\");",
 									"});",
 									"pm.test(\"tag returned should be test\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -377,6 +381,85 @@
 									"type": "string"
 								}
 							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"{findEdges(toDID:[\\\"{{did}}\\\"]){hash,jwt,from {did},to{did},type,time,visibility,retention,tag,data}}\"\n}"
+						},
+						"url": {
+							"raw": "{{mouroUrl}}/graphql",
+							"host": [
+								"{{mouroUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findEdges (public no auth)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "18b3cd09-8557-44c3-9ae9-48ba200fc422",
+								"exec": [
+									"pm.test(\"response is ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"response should be okay to process\", function () { ",
+									"    pm.response.to.not.be.error; ",
+									"});",
+									"",
+									"pm.test(\"hash returned should be the findEdges\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.findEdges[0].hash).to.eql(pm.environment.get(\"edgeHash\"));",
+									"});",
+									"",
+									"pm.test(\"from returned should be the did2\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.findEdges[0].from.did).to.eql(pm.environment.get(\"did2\"));",
+									"});",
+									"",
+									"pm.test(\"to returned should be the did\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.findEdges[0].to.did).to.eql(pm.environment.get(\"did\"));",
+									"});",
+									"pm.test(\"type returned should be ALL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.findEdges[0].type).to.eql(\"ALL\");",
+									"});",
+									"pm.test(\"visibility returned should be ANY\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.findEdges[0].visibility).to.eql(\"ANY\");",
+									"});",
+									"pm.test(\"tag returned should be test\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.findEdges[0].tag).to.eql(\"test\");",
+									"});",
+									"pm.test(\"jwt returned should be edgeJWT\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.findEdges[0].jwt).to.eql(pm.environment.get(\"edgeJWT\"));",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
 						},
 						"method": "POST",
 						"header": [
@@ -435,9 +518,9 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.data.findEdges[0].type).to.eql(\"ALL\");",
 									"});",
-									"pm.test(\"visibility returned should be BOTH\", function () {",
+									"pm.test(\"visibility returned should be ANY\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.data.findEdges[0].visibility).to.eql(\"BOTH\");",
+									"    pm.expect(jsonData.data.findEdges[0].visibility).to.eql(\"ANY\");",
 									"});",
 									"pm.test(\"tag returned should be test\", function () {",
 									"    var jsonData = pm.response.json();",

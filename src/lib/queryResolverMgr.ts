@@ -14,6 +14,8 @@ export class QueryResolverMgr {
 
     async me(headers: headersType){
         const authToken=await this.authMgr.verifyAuthorizationHeader(headers);
+        if(authToken==null) return {};
+        
         return {
             did: authToken.issuer
         }
@@ -37,8 +39,7 @@ export class QueryResolverMgr {
         const authData=await this.authMgr.getAuthData(headers);
         
         let edges=await this.storageMgr.findEdges(args,authData)
-        console
-
+        
         for(let i=0;i<edges.length;i++){
             let edge=edges[i];
             //Transformations

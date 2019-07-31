@@ -29,6 +29,7 @@ const f=(async()=>{
     const edgePayload={
         sub: did,
         type: 'ALL',
+        vis: 'ANY',
         tag: 'test',
         data: 'anyData'
     }
