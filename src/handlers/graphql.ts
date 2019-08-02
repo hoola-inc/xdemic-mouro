@@ -25,7 +25,11 @@ export class GraphQLHandler {
                     context,
                 });
             },
-            introspection: true
+            introspection: true,
+            formatError: (error: any) => {
+                console.log(error);
+                return error;
+            },            
         });
 
         return server.createHandler({
