@@ -77,7 +77,7 @@ describe('AuthMgr', () => {
     test('bad authorization format (single part)', (done)=> {
       didJWT.verifyJWT.mockImplementationOnce(()=>{throw Error('Incorrect format JWT')})
 
-      sut.verifyAuthorizationHeader({"Authorization": "bad"})
+      sut.verifyAuthorizationHeader({authorization: "bad"})
       .then(()=> {
         fail("shouldn't return"); done()
       })
@@ -89,7 +89,7 @@ describe('AuthMgr', () => {
 
 
     test('bad authorization format (no Bearer)', (done)=> {
-      sut.verifyAuthorizationHeader({"Authorization": "bad format"})
+      sut.verifyAuthorizationHeader({authorization: "bad format"})
       .then(()=> {
         fail("shouldn't return"); done()
       })
@@ -102,7 +102,7 @@ describe('AuthMgr', () => {
 
 
     test('bad authorization token', (done)=> {
-      sut.verifyAuthorizationHeader({"Authorization": "Bearer bad"})
+      sut.verifyAuthorizationHeader({authorization: "Bearer bad"})
       .then(()=> {
         fail("shouldn't return"); done()
       })
@@ -126,7 +126,7 @@ describe('AuthMgr', () => {
 
     test('invalid token', (done)=> {
       didJWT.verifyJWT.mockImplementationOnce(()=>{throw Error('Incorrect format JWT')})
-      sut.getAuthData({"Authorization": "Bearer bad"})
+      sut.getAuthData({authorization: "Bearer bad"})
       .then(()=> {
         fail("shouldn't return"); done()
       })
@@ -150,7 +150,7 @@ describe('AuthMgr', () => {
 
     test('valid token (no claim)', (done)=> {
       didJWT.verifyJWT.mockResolvedValueOnce({issuer: did, payload: {}})
-      sut.getAuthData({"Authorization": "Bearer ey"})
+      sut.getAuthData({authorization: "Bearer ey"})
       .then((resp: any)=> {
         expect(resp).not.toBeNull();
         expect(resp).toEqual({user: did})
@@ -163,7 +163,7 @@ describe('AuthMgr', () => {
 
     test('valid token (no access)', (done)=> {
         didJWT.verifyJWT.mockResolvedValueOnce({issuer: did, payload: {claim:{}}})
-        sut.getAuthData({"Authorization": "Bearer ey"})
+        sut.getAuthData({authorization: "Bearer ey"})
         .then((resp: any)=> {
           expect(resp).not.toBeNull();
           expect(resp).toEqual({user: did})
@@ -176,7 +176,7 @@ describe('AuthMgr', () => {
   
     test('valid token (empty access)', (done)=> {
         didJWT.verifyJWT.mockResolvedValueOnce({issuer: did, payload: {claim:{access:[]}}})
-        sut.getAuthData({"Authorization": "Bearer ey"})
+        sut.getAuthData({authorization: "Bearer ey"})
         .then((resp: any)=> {
           expect(resp).not.toBeNull();
           expect(resp).toEqual({user: did})
@@ -193,7 +193,7 @@ describe('AuthMgr', () => {
         //Second call for authzToken
         didJWT.verifyJWT.mockImplementationOnce(()=>{throw Error('Incorrect format JWT')})
         
-        sut.getAuthData({"Authorization": "Bearer ey"})
+        sut.getAuthData({authorization: "Bearer ey"})
         .then((resp: any)=> {
           expect(resp).not.toBeNull();
           expect(resp).toEqual({user: did})
@@ -210,7 +210,7 @@ describe('AuthMgr', () => {
         //Second call for authzToken
         didJWT.verifyJWT.mockResolvedValueOnce({issuer: sub, payload: {sub: sub, claim:{}}})
         
-        sut.getAuthData({"Authorization": "Bearer ey"})
+        sut.getAuthData({authorization: "Bearer ey"})
         .then((resp: any)=> {
           expect(resp).not.toBeNull();
           expect(resp).toEqual({user: did})
@@ -227,7 +227,7 @@ describe('AuthMgr', () => {
         //Second call for authzToken
         didJWT.verifyJWT.mockResolvedValueOnce({issuer: sub, payload: {sub: did, claim:{action:'read',condition:{from: did}}}})
         
-        sut.getAuthData({"Authorization": "Bearer ey"})
+        sut.getAuthData({authorization: "Bearer ey"})
         .then((resp: any)=> {
           expect(resp).not.toBeNull();
           expect(resp).toEqual({
@@ -247,7 +247,7 @@ describe('AuthMgr', () => {
         //Second call for authzToken
         didJWT.verifyJWT.mockResolvedValueOnce({issuer: sub, payload: {sub: did, claim:{action:'delete',condition:{from: did}}}})
         
-        sut.getAuthData({"Authorization": "Bearer ey"})
+        sut.getAuthData({authorization: "Bearer ey"})
         .then((resp: any)=> {
           expect(resp).not.toBeNull();
           expect(resp).toEqual({

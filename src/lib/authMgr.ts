@@ -33,7 +33,7 @@ export class AuthMgr {
    }
 
    async verifyAuthorizationHeader(headers: headersType):Promise<VerifiedJWTType|null>{
-    const authHead = headers.Authorization;
+    const authHead = headers.authorization;
     if(authHead===undefined) return null;
 
     const parts = authHead.split(" ");
