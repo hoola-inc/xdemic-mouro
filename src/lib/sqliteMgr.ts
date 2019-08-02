@@ -95,7 +95,6 @@ module.exports = class SQLiteMgr implements StorageInterface {
     const db = await this._getDatabase();
     try {
       const res = await db.get(q);
-      if(res) res.time= (new Date((res.time)));
       return res;
     } catch (e) {
       throw (e);
@@ -105,11 +104,12 @@ module.exports = class SQLiteMgr implements StorageInterface {
   async findEdges(args: any, authData: AuthDataType | null){
     //find edges
     let where={};
+    console.log({args})
     
     if(args.fromDID) where=sql.and(where,sql.in('from',args.fromDID))
     if(args.toDID)   where=sql.and(where,sql.in('to'  ,args.toDID))
     if(args.type)  where=sql.and(where,sql.in('type',args.type))
-    if(args.since) where=sql.and(where,sql.gte('time', args.since))
+    if(args.since) where=sql.and(where,sql.gt('time', args.since))
     if(args.tag)   where=sql.and(where,sql.in('tag',args.tag))
     
     //Add perms to whereClause
@@ -124,14 +124,6 @@ module.exports = class SQLiteMgr implements StorageInterface {
     const db = await this._getDatabase();
     try {
       let res = await db.all(q);
-
-      //Converts
-      if(res){
-        res=res.map((r:any)=>{
-            r.time= (new Date((r.time)));
-            return r;
-        })
-      }
       return res;
     } catch (e) {
       throw (e);

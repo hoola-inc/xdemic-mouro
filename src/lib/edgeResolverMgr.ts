@@ -32,7 +32,7 @@ export class EdgeResolverMgr {
             from: pl.iss,
             to:   pl.sub,
             type:  pl.type,
-            time: new Date(pl.iat*1000),
+            time: pl.iat,
             visibility: this.visToVisibility(pl.vis),
             retention: pl.ret,
             tag:  pl.tag,

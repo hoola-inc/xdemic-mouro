@@ -73,14 +73,6 @@ describe('SchemaMgr', () => {
             })
         })
 
-        test('Date Scalar Type',()=>{
-            const dateType = sut._getResolvers()['Date'];
-            expect(dateType.parseValue('v')).toEqual('v');
-            expect(dateType.serialize(new Date(100000000000))).toEqual(100000000);
-            expect(dateType.parseLiteral({kind: Kind.BOOLEAN, value:false},null)).toBeNull();
-            expect(dateType.parseLiteral({kind: Kind.INT, value:'1'},null)).toEqual(1);
-            
-        })
     })
 
     test('getSchema', ()=> {

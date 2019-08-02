@@ -64,7 +64,7 @@ describe('PgMgr', () => {
                 from: 'did:from',
                 to: 'did:to',
                 type: 'someType',
-                time: new Date(),
+                time: new Date().getTime() * 1000,
                 visibility: 'ANY',
                 jwt: 'ey...'
             }
@@ -88,7 +88,7 @@ describe('PgMgr', () => {
                 from: 'did:from',
                 to: 'did:to',
                 type: 'someType',
-                time: new Date(),
+                time: new Date().getTime() * 1000,
                 visibility: 'ANY',
                 jwt: 'ey...'
             }
@@ -215,7 +215,7 @@ describe('PgMgr', () => {
             sut.findEdges({type:['type1','type2'],since:'2019',tag:['tag1','tag2']},{user: 'did:u'})
             .then((resp)=> {
                 expect(resp).toEqual(['OK'])
-                expect(pgClientMock.query).toBeCalledWith("SELECT * FROM edges WHERE ((type IN ('type1', 'type2') AND time >= to_timestamp(2019)) AND tag IN ('tag1', 'tag2')) AND ((visibility = 'TO' AND \"to\" = 'did:u') OR (visibility = 'BOTH' AND (\"from\" = 'did:u' OR \"to\" = 'did:u')) OR visibility = 'ANY') ORDER BY time")
+                expect(pgClientMock.query).toBeCalledWith("SELECT * FROM edges WHERE ((type IN ('type1', 'type2') AND time > to_timestamp(2019)) AND tag IN ('tag1', 'tag2')) AND ((visibility = 'TO' AND \"to\" = 'did:u') OR (visibility = 'BOTH' AND (\"from\" = 'did:u' OR \"to\" = 'did:u')) OR visibility = 'ANY') ORDER BY time")
                 done()
             })
         })
