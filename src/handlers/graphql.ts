@@ -11,6 +11,11 @@ export class GraphQLHandler {
         this.schemaMgr=schemaMgr
     }
 
+    formatError(error: any){
+        console.error(error);
+        return error;
+    }
+
     getHandler(){
         const schema = this.schemaMgr.getSchema()
         const server = new ApolloServer({
@@ -26,10 +31,7 @@ export class GraphQLHandler {
                 });
             },
             introspection: true,
-            formatError: (error: any) => {
-                console.log(error);
-                return error;
-            },            
+            formatError: this.formatError,            
         });
 
         return server.createHandler({
