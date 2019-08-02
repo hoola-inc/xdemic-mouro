@@ -6,11 +6,6 @@ const sql = require('sql-bricks-postgres');
 module.exports = class PgMgr implements StorageInterface{
 
   constructor() {
-    //Small hack to make sure date is in UTC all the time
-    require('pg').types.setTypeParser(1114, (s:string)=>{
-      return new Date(Date.parse(s + " UTC"));
-    })
-    
     console.log("Pg Driver Started.")
   }
 
@@ -28,7 +23,7 @@ module.exports = class PgMgr implements StorageInterface{
       "from" VARCHAR(64) NOT NULL, 
       "to" VARCHAR(64) NOT NULL, 
       type VARCHAR(128) NOT NULL, 
-      "time" TIMESTAMP NOT NULL, -- from iat
+      "time" INTEGER NOT NULL, -- from iat
       visibility VARCHAR(4) NOT NULL,
       retention INTEGER NULL,
       tag VARCHAR(128) NULL, 
@@ -122,7 +117,7 @@ module.exports = class PgMgr implements StorageInterface{
     if(args.fromDID) where=sql.and(where,sql.in('from',args.fromDID))
     if(args.toDID)   where=sql.and(where,sql.in('to'  ,args.toDID))
     if(args.type)  where=sql.and(where,sql.in('type',args.type))
-    if(args.since) where=sql.and(where,sql.gte('time', sql("to_timestamp("+args.since+")")))
+    if(args.since) where=sql.and(where,sql.gt('time', args.since))
     if(args.tag)   where=sql.and(where,sql.in('tag',args.tag))
     
     //Add perms to whereClause

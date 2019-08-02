@@ -54,7 +54,7 @@ describe('StorageMgr', () => {
                 to: 'did:to',
                 type: 'someType',
                 visibility: 'BOTH',
-                time: new Date(),
+                time: new Date().getTime() * 1000,
                 jwt: 'ey...'
             }
             sut.addEdge(edge)

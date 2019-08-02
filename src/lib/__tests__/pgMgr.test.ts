@@ -26,9 +26,6 @@ describe('PgMgr', () => {
         expect(sut).not.toBeUndefined();
     });
 
-    test('date fix', ()=>{
-    })
-
     describe("init", ()=>{
         test('fail', (done)=>{
             pgClientMock.query.mockImplementationOnce(()=>{ throw Error('fail')})
@@ -64,7 +61,7 @@ describe('PgMgr', () => {
                 from: 'did:from',
                 to: 'did:to',
                 type: 'someType',
-                time: new Date(),
+                time: 1,
                 visibility: 'ANY',
                 jwt: 'ey...'
             }
@@ -88,7 +85,7 @@ describe('PgMgr', () => {
                 from: 'did:from',
                 to: 'did:to',
                 type: 'someType',
-                time: new Date(),
+                time: 1,
                 visibility: 'ANY',
                 jwt: 'ey...'
             }
@@ -212,10 +209,10 @@ describe('PgMgr', () => {
         test('ok (type,since and tag)', (done)=> {
             pgClientMock.query.mockReset()
             pgClientMock.query.mockImplementationOnce(()=>{return {rows: ['OK']}});
-            sut.findEdges({type:['type1','type2'],since:'2019',tag:['tag1','tag2']},{user: 'did:u'})
+            sut.findEdges({type:['type1','type2'],since:2019 ,tag:['tag1','tag2']},{user: 'did:u'})
             .then((resp)=> {
                 expect(resp).toEqual(['OK'])
-                expect(pgClientMock.query).toBeCalledWith("SELECT * FROM edges WHERE ((type IN ('type1', 'type2') AND time >= to_timestamp(2019)) AND tag IN ('tag1', 'tag2')) AND ((visibility = 'TO' AND \"to\" = 'did:u') OR (visibility = 'BOTH' AND (\"from\" = 'did:u' OR \"to\" = 'did:u')) OR visibility = 'ANY') ORDER BY time")
+                expect(pgClientMock.query).toBeCalledWith("SELECT * FROM edges WHERE ((type IN ('type1', 'type2') AND time > 2019) AND tag IN ('tag1', 'tag2')) AND ((visibility = 'TO' AND \"to\" = 'did:u') OR (visibility = 'BOTH' AND (\"from\" = 'did:u' OR \"to\" = 'did:u')) OR visibility = 'ANY') ORDER BY time")
                 done()
             })
         })

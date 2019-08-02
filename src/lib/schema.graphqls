@@ -7,7 +7,7 @@ type Query {
 
     # Find edges
     # returns an array of Edges
-    findEdges(fromDID:[String], toDID:[String], type:[String], since:Date, tag:[String]): [Edge!]!
+    findEdges(fromDID:[String], toDID:[String], type:[String], since:Int, tag:[String]): [Edge!]!
 }
 
 #Identity type.
@@ -15,8 +15,6 @@ type Identity {
     # Decentralized Identifier (DID) of the Identity
     did: String!
 }
-
-scalar Date
 
 type Edge {
     # blake2b hash of the JWT
@@ -30,7 +28,7 @@ type Edge {
     # type of the edge. "type" on the JWT
     type: String!
     # date of the issuance of the edge. "iat" on the JWT
-    time: Date!
+    time: Int!
     # tag of the edge. "tag" on the JWT
     tag: String
     # visibility of the edge. "vis" on the JWT
