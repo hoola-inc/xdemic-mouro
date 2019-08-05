@@ -1,5 +1,6 @@
 export type headersType={
     authorization?: string
+    Authorization?: string
 }
 
 export type eventType = {

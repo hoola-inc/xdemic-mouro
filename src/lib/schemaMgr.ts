@@ -2,10 +2,6 @@ const makeExecutableSchema = require('graphql-tools').makeExecutableSchema;
 import { readFileSync } from 'fs'
 import { QueryResolverMgr } from './queryResolverMgr'
 import { EdgeResolverMgr } from './edgeResolverMgr';
-import { GraphQLScalarType, GraphQLEnumType } from 'graphql/type/definition';
-import { Kind } from 'graphql/language/kinds';
-
-
 
 export class SchemaMgr {
 
