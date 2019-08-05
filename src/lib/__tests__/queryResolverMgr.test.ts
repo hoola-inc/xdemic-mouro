@@ -44,7 +44,7 @@ describe('QueryResolverMgr', () => {
             jest.fn().mockImplementationOnce(()=>{throw Error('fail')})
 
         test('authMgr.verifyAuthorizarionHeader fail', (done)=> {
-            sut.me({Authorization: 'Bearer '+validToken})
+            sut.me({authorization: 'Bearer '+validToken})
             .then(()=> {
                 fail("shouldn't return"); done()
             })
@@ -73,7 +73,7 @@ describe('QueryResolverMgr', () => {
             mockAuthMgr.verifyAuthorizationHeader=
                 jest.fn().mockResolvedValueOnce({issuer: did});
     
-                sut.me({Authorization: 'Bearer '+validToken})
+                sut.me({authorization: 'Bearer '+validToken})
             .then((resp: any)=> {
                 expect(resp).not.toBeNull();
                 expect(resp.did).toEqual(did)
@@ -90,7 +90,7 @@ describe('QueryResolverMgr', () => {
         test('authMgr.getAuthData fail', (done)=> {
             mockAuthMgr.getAuthData=
                 jest.fn().mockImplementationOnce(()=>{throw Error('fail')})
-            sut.edgeByHash({Authorization: 'Bearer '+validToken},'hash')
+            sut.edgeByHash({authorization: 'Bearer '+validToken},'hash')
             .then(()=> {
                 fail("shouldn't return"); done()
             })
@@ -105,7 +105,7 @@ describe('QueryResolverMgr', () => {
                 jest.fn().mockResolvedValue({user: did})
             mockStorageMgr.getEdge=
                 jest.fn().mockImplementationOnce(()=>{throw Error('failS')})
-            sut.edgeByHash({Authorization: 'Bearer '+validToken},'hash')
+            sut.edgeByHash({authorization: 'Bearer '+validToken},'hash')
             .then(()=> {
                 fail("shouldn't return"); done()
             })
@@ -120,7 +120,7 @@ describe('QueryResolverMgr', () => {
                 jest.fn().mockResolvedValue({user: did})
                 mockStorageMgr.getEdge=
                 jest.fn().mockResolvedValue(null)
-            sut.edgeByHash({Authorization: 'Bearer '+validToken},'hash')
+            sut.edgeByHash({authorization: 'Bearer '+validToken},'hash')
             .then((resp)=> {
                 expect(resp).toBeNull();
                 done()
@@ -134,7 +134,7 @@ describe('QueryResolverMgr', () => {
             mockStorageMgr.getEdge=
                 jest.fn().mockResolvedValue({from: 'other-did', to: did, claim:{}})
 
-            sut.edgeByHash({Authorization: 'Bearer '+validToken},'hash')
+            sut.edgeByHash({authorization: 'Bearer '+validToken},'hash')
             .then((resp: any)=> {
                 expect(resp).not.toBeNull();
                 expect(resp.from).toEqual({did: 'other-did'})
@@ -153,7 +153,7 @@ describe('QueryResolverMgr', () => {
         test('authMgr.getAuthData fail', (done)=> {
             mockAuthMgr.getAuthData=
                 jest.fn().mockImplementationOnce(()=>{throw Error('fail')})
-            sut.findEdges({Authorization: 'Bearer '+validToken},'args')
+            sut.findEdges({authorization: 'Bearer '+validToken},'args')
             .then(()=> {
                 fail("shouldn't return"); done()
             })
@@ -168,7 +168,7 @@ describe('QueryResolverMgr', () => {
                 jest.fn().mockResolvedValue({})
             mockStorageMgr.findEdges=
                 jest.fn().mockImplementationOnce(()=>{throw Error('failS')})
-            sut.findEdges({Authorization: 'Bearer '+validToken},'args')
+            sut.findEdges({authorization: 'Bearer '+validToken},'args')
             .then(()=> {
                 fail("shouldn't return"); done()
             })
@@ -183,7 +183,7 @@ describe('QueryResolverMgr', () => {
                 jest.fn().mockResolvedValue({})
             mockStorageMgr.findEdges=
                 jest.fn().mockResolvedValue([{from: 'other-did', to: did, claim:{}}])
-            sut.findEdges({Authorization: 'Bearer '+validToken},'args')
+            sut.findEdges({authorization: 'Bearer '+validToken},'args')
             .then((resp: any)=> {
                 expect(resp).not.toBeNull();
                 expect(resp[0]).not.toBeNull();

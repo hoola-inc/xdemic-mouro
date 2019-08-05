@@ -1,6 +1,6 @@
 type Query {
     # Return identity for the API token issuer
-    me: Identity! 
+    me: Identity 
 
     # Return an edge by hash
     edgeByHash(hash: ID!): Edge
