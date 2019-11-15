@@ -1,5 +1,7 @@
 import { DidResolverMgr } from "../didResolverMgr";
 
+process.env.INFURA_PROJECT_ID='fakeINFURA_PROJECT_ID'
+
 
 describe('DidResolverMgr', () => {
 
