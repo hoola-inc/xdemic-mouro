@@ -2,12 +2,15 @@ const didJWT = require('did-jwt');
 const blake = require('blakejs')
 
 import { StorageMgr, PersistedEdgeType } from "./storageMgr";
+import { DidResolverMgr } from "./didResolverMgr";
 
 export class EdgeResolverMgr {
 
     storageMgr: StorageMgr;
+    didResolverMgr: DidResolverMgr;
 
-    constructor(storageMgr: StorageMgr) {
+    constructor(didResolverMgr: DidResolverMgr, storageMgr: StorageMgr) {
+        this.didResolverMgr = didResolverMgr
         this.storageMgr = storageMgr
     }
 
@@ -21,7 +24,7 @@ export class EdgeResolverMgr {
         //Verify that the body is a proper JWT
         //This can take up to 3 secc
         console.log("verifyJWT...")
-        const verifiedJWT = await didJWT.verifyJWT(edgeJWT);
+        const verifiedJWT = await didJWT.verifyJWT(edgeJWT,{resolver: this.didResolverMgr.getResolver()});
         console.log(verifiedJWT);
 
         const pl=verifiedJWT.payload;
