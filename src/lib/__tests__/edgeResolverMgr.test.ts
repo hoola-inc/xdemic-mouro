@@ -68,6 +68,10 @@ describe('EdgeResolverMgr', () => {
                 fail(err); done()
             })
         })
+        
+        test('aud field', (done)=>{
+            done()
+        })
     })
 
     describe("visToVisibility()", () => {
