@@ -35,6 +35,19 @@ const f=(async()=>{
     }
     const edgeJWT  = await credentials2.signJWT(edgePayload);
     const edgeHash = blake.blake2bHex(edgeJWT);
+
+    //Create Edge JWT with AUD
+    const edgeAudPayload={
+        sub: did,
+        type: 'ALL',
+        vis: 'ANY',
+        tag: 'test',
+        data: 'anyData',
+        aud: did
+    }
+    const edgeAudJWT  = await credentials2.signJWT(edgeAudPayload);
+    const edgeAudHash = blake.blake2bHex(edgeAudJWT);
+
     
     //Create AuthzToken
     const authzPL={
@@ -64,6 +77,8 @@ const f=(async()=>{
         did2: did2,
         edgeJWT: edgeJWT,
         edgeHash: edgeHash,
+        edgeAudJWT: edgeAudJWT,
+        edgeAudHash: edgeAudHash,
         authToken2: authToken2
         
     }
