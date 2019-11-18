@@ -1,5 +1,7 @@
+import { headersType } from "./commonTypes";
+import { DidResolverMgr } from "./didResolverMgr";
+
 const didJWT = require('did-jwt')
-import { headersType } from './commonTypes';
 
 export type AuthzConditionType ={
     iss: string,
@@ -19,16 +21,17 @@ export type VerifiedJWTType = {
         claim?: any
     }
 }
-
 export class AuthMgr {
 
-    constructor() {
-        require('ethr-did-resolver').default()
+    didResolverMgr: DidResolverMgr;
+
+    constructor(didResolverMgr: DidResolverMgr) {
+        this.didResolverMgr = didResolverMgr
     }
 
     async verify(authToken: string): Promise<VerifiedJWTType> {
         if (!authToken) throw new Error('no authToken')
-        const verifiedToken = await didJWT.verifyJWT(authToken);
+        const verifiedToken = await didJWT.verifyJWT(authToken,{resolver: this.didResolverMgr.getResolver()});
         return verifiedToken;
    }
 

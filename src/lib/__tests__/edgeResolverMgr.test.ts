@@ -6,6 +6,9 @@ const credentials = new Credentials({
     appName: 'Test App', did, privateKey
 })
 
+import { DidResolverMgr } from '../didResolverMgr';
+jest.mock('../didResolverMgr')
+
 import { StorageMgr } from '../storageMgr';
 jest.mock('../storageMgr')
 
@@ -15,13 +18,14 @@ jest.mock("did-jwt");
 describe('EdgeResolverMgr', () => {
     
     let sut: EdgeResolverMgr;
+    let mockDidResolverMgr:DidResolverMgr=new DidResolverMgr();
     let mockStorageMgr:StorageMgr=new StorageMgr();
     let validToken='';
 
     const sub='0x0'
 
     beforeAll((done) =>{
-        sut = new EdgeResolverMgr(mockStorageMgr);
+        sut = new EdgeResolverMgr(mockDidResolverMgr,mockStorageMgr);
 
         const payload={
             sub: did,
