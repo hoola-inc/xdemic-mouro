@@ -7,7 +7,7 @@ export class DidResolverMgr {
 
     constructor(){
         let resolvers={};
-        
+    
         if(process.env.INFURA_PROJECT_ID){
             const ethrDidResolverConfig = { 
                 rpcUrl: 'https://mainnet.infura.io/v3/'+process.env.INFURA_PROJECT_ID 
