@@ -24,12 +24,22 @@ const server = new ApolloServer({
     });
 },
   introspection: true,
+  playground: true,
   graphqlPath:'/graphql'
 });
 
 import * as express from "express";
 const app = express();
 server.applyMiddleware({ app }); // app is from an existing express app
+
+// default url
+
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: true,
+    message: 'Mouro'
+  })
+})
 
 const PORT = process.env.PORT || 3000;
 
