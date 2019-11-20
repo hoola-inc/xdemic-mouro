@@ -21,7 +21,7 @@ For Infura project id goto https://infura.io
 
 - create project
 - click on view project 
-- copy find project id 
+- copy project id 
 
 For cloud postgres goto https://www.elephantsql.com/
 - signIn using github or google account
