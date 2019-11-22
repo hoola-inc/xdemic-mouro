@@ -29,7 +29,7 @@ const server = new ApolloServer({
 });
 
 import * as express from "express";
-import { declareFunction } from "@babel/types";
+// import { declareFunction } from "@babel/types";
 const app = express();
 server.applyMiddleware({ app }); // app is from an existing express app
 
