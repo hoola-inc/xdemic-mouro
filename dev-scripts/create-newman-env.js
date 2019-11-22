@@ -1,21 +1,23 @@
-const { Credentials } = require('uport-credentials')
-const blake = require('blakejs')
+exports.f = async (req, res) => {
 
-const { did, privateKey } = Credentials.createIdentity();
-const credentials = new Credentials({
-    appName: 'Test', did, privateKey
-})
+    const { Credentials } = require('uport-credentials')
+    const blake = require('blakejs')
 
-const id2 = Credentials.createIdentity();
-const did2 = id2.did
-const privateKey2 = id2.privateKey
+    const { did, privateKey } = Credentials.createIdentity();
+    const credentials = new Credentials({
+        appName: 'Test', did, privateKey
+    })
 
-const credentials2 = new Credentials({
-    appName: 'Test2', did: did2, privateKey: privateKey2
-})
+    const id2 = Credentials.createIdentity();
+    const did2 = id2.did
+    const privateKey2 = id2.privateKey
+
+    const credentials2 = new Credentials({
+        appName: 'Test2', did: did2, privateKey: privateKey2
+    })
 
 
-exports.f = (async () => {
+
     //Create AuthToken
     const authTokenPL = {
         sub: did,
@@ -94,5 +96,9 @@ exports.f = (async () => {
     }
     // console.log(JSON.stringify(env,null,3));
     const authToken = JSON.stringify(env, null, 3);
-    return authToken;
-})();
+
+    res.status(200).json({
+        status: true,
+        data: authToken
+    })
+};
