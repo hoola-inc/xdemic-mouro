@@ -92,6 +92,12 @@ const f=(async()=>{
     for (const key in envVars){
         env.values.push({key: key, value: envVars[key]})
     }
-    console.log(JSON.stringify(env,null,3));
+    // console.log(JSON.stringify(env,null,3));
+    const authToken = JSON.stringify(env, null, 3);
+    return authToken;
 })();
 
+
+module.exports = {
+    authToken: f
+}
