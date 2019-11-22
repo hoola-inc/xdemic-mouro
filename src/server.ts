@@ -45,7 +45,7 @@ app.get("/", (req, res) => {
 app.get("/authtoken", async (req, res) => {
   try {
     const token = require("../dev-scripts/create-newman-env");
-    const authToken = await token.authToken;
+    const authToken = await token.f;
     return res.status(200).json({
       status: true,
       data: authToken
