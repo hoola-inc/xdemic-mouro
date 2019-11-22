@@ -31,8 +31,7 @@
     "jest-html-reporter": "^2.5.0",
     "jest-junit": "^6.4.0",
     "serverless-prune-plugin": "^1.4.1",
-    "ts-jest": "^24.0.2",
-    
+    "ts-jest": "^24.0.2"
   },
   "dependencies": {
     "@types/express": "^4.17.0",
