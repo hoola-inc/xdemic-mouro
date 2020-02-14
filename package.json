@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/uport-project/mouro#readme",
   "devDependencies": {
-    "aws-lambda": "^0.1.2",
+    "aws-lambda": "^1.0.5",
     "aws-sdk-mock": "^4.3.1",
     "jest": "^24.8.0",
     "jest-html-reporter": "^2.5.0",
