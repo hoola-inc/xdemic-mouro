@@ -43,7 +43,7 @@
     "did-jwt": "^3.0.0",
     "did-resolver": "^1.1.0",
     "ethr-did-resolver": "^1.0.3",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "graphql": "^14.2.0",
     "pg": "^7.11.0",
     "serverless": "^1.42.3",
